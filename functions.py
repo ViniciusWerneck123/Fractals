@@ -3,6 +3,18 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from typing import Tuple
 
+'''Here is the file for all the functions necessary to create the image of a fractal.
+
+fractal: main call function that receives the fractal law function and parameters for the graph limits and numeric calculation.
+
+plot_set: main function to plot the fractal. Only needs the real and complex matrix of points as well as the color for each point.
+
+MandelbrotSet: function that generates the Mandelbrot set. Similar to fractal function but the way to collect the points is different.
+
+JuliaSet: an existing function that holds for creation of Julia sets. It uses the grid values of real and complex parts of the plane
+and the real and complex values of the constant c.'''
+
+
 def fractal(n: int, func, a: float, b: float, xlim: tuple, ylim: tuple, n_points: int, cmap='viridis') -> Tuple[np.array, np.array, np.array]:
     '''Return a tuple of matrices with x and y values of the mandelbrot set.\n
     n: number of iterations.\n
@@ -44,14 +56,6 @@ def fractal(n: int, func, a: float, b: float, xlim: tuple, ylim: tuple, n_points
     return x_start, y_start, color
 
 
-def JuliaSet(x, y, a, b):
-    '''Sequence: z(k) = z(k-1)^2 + c
-    Where c = a + bi
-    and z = x + yi'''
-    xk = x**2 - y**2 + a
-    yk = 2*x*y + b
-    return xk, yk
-
 
 def plot_set(x, y, color, s=0.5, clean_plot=True, aspect_ratio=1):
     f = plt.figure(figsize=(9, 9/aspect_ratio))
@@ -60,6 +64,17 @@ def plot_set(x, y, color, s=0.5, clean_plot=True, aspect_ratio=1):
         plt.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
     plt.show()
     return f, plt.gca()
+
+
+
+def JuliaSet(x, y, a, b):
+    '''Sequence: z(k) = z(k-1)^2 + c
+    Where c = a + bi
+    and z = x + yi'''
+    xk = x**2 - y**2 + a
+    yk = 2*x*y + b
+    return xk, yk
+
 
 
 def MandelbrotSet(n: int, xlim: tuple, ylim: tuple, n_points: int, cmap='viridis'):
