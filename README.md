@@ -1,9 +1,18 @@
 # Fractals
-A little program which i created to plot Mandelbrot and Julia sets.
+A little program that i created to plot fractals.
+
+Plotting the Julia set for c = 1 - golden ratio:
+
+![juliaset_1](https://github.com/user-attachments/assets/b99c8869-17d4-4d7c-9a72-86035a667963)
+
+
+Julia set for c = 0.285 - 0.01i
+
+![juliaset_2](https://github.com/user-attachments/assets/b7652238-895e-4487-bb3a-dbb301a3edd4)
+
 
 Plotting the Mandelbrot set:
 
-![mandelbrot](https://github.com/user-attachments/assets/b76512f7-5925-41a9-95d2-eb438e35e4bd)
+![mandelbrot](https://github.com/user-attachments/assets/5bb17345-245b-4ece-b87b-e6ece10adec0)
 
-Plotting the Julia set for c = -0.4 + 0.6i:
-![juliaset](https://github.com/user-attachments/assets/7f0b72cc-a869-4d70-b6c6-d1183ea01814)
+
