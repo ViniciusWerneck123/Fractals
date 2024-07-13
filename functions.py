@@ -24,19 +24,19 @@ def fractal(n: int, c: complex, xlim: tuple, ylim: tuple, n_points: int, cmap='v
     z_start = np.array([complex(i[0], i[1]) for i in values])
 
     # Color of the converging points
-    color = np.zeros(z_start.shape)
+    color = np.ones(z_start.shape)*-1
     z = z_start
     for i in range(1, n + 1):
         z = z**2 + c
         # Update color based on convergence:
         # if point diverge, the value, color = i -> the number of the iteration it took to diverge
         diverging = np.absolute(z) > 2
-        new_point = color == 0
+        new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
+        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + np.log(i), color)
 
     # Index of points that converge until the last iteration
-    converging = color == 0
+    converging = color == -1
 
     # Merge colors
     cmap_ = cm.get_cmap(cmap)
