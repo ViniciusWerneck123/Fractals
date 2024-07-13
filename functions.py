@@ -47,7 +47,7 @@ def fractal(n: int, func, a: float, b: float, xlim: tuple, ylim: tuple, n_points
 
     # Merge colors
     cmap = cm.get_cmap(cmap)
-    color = cmap(color/max(color.flatten()))
+    color = cmap(color/color.max())
     
     # Color of points that converge until last iteration will have a black color
     for i in range(3):
@@ -57,12 +57,22 @@ def fractal(n: int, func, a: float, b: float, xlim: tuple, ylim: tuple, n_points
 
 
 
-def plot_set(x, y, color, s=0.5, clean_plot=True, aspect_ratio=1):
-    f = plt.figure(figsize=(9, 9/aspect_ratio))
+def plot_set(x, y, color, s=0.5, clean_plot=True, width=9):
+    # Calculate aspect ratio based on the limits of the axes
+    dx = x.max() - x.min()
+    dy = y.max() - y.min()
+    aspect_ratio = dx/dy
+
+    f = plt.figure(figsize=(width, width/aspect_ratio))
+
     plt.scatter(x, y, s=s, c=color)
+
+    # Leave the plot only with a black edge
     if clean_plot:
         plt.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
+
     plt.show()
+
     return f, plt.gca()
 
 
@@ -107,7 +117,7 @@ def MandelbrotSet(n: int, xlim: tuple, ylim: tuple, n_points: int, cmap='viridis
 
     # Merge colors
     cmap = cm.get_cmap(cmap)
-    color = cmap(color/max(color.flatten()))
+    color = cmap(color/color.max())
     
     # Color of points that converge until last iteration will have a black color
     for i in range(3):
