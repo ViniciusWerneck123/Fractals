@@ -14,8 +14,8 @@ CMAP = 'viridis'
 INTERIOR_COLOR = [0, 0, 0] # RGB
 GRAPH_WIDTH = 9
 
-def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
-            interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH) -> Tuple[np.array, np.array, np.array]:
+def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP,
+            cmap=CMAP, interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                                                                                                                     
     xlim: tuple with lower and upper limit for x axes.                                                         
@@ -26,8 +26,10 @@ def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, 
     stop_step: the value of the iteration the user wants to force the calculation to stop.                                                      
     cmap: cmap used for coloring the fractal. Default to viridis.                                                       
     interior_color: color in RGB of points that converge. Default to black'''
+
     # Grid of points
-    x, y = np.linspace(xlim[0], xlim[1], n_points, dtype=np.float64), np.linspace(ylim[0], ylim[1], n_points, dtype=np.float64)
+    x = np.linspace(xlim[0], xlim[1], n_points, dtype=np.float64)
+    y = np.linspace(ylim[0], ylim[1], n_points, dtype=np.float64)
     values = product(x, y)
 
     del x, y
@@ -50,7 +52,7 @@ def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, 
         diverging = np.absolute(z) > 2
 
         # If there is no point diverging, leave the loop
-        if np.all(~diverging):
+        if np.all(~diverging) and i > 25:
             break
 
         new_point = color == -1
@@ -142,7 +144,7 @@ def MandelbrotSet(xlim: tuple = MANDELBROT_XLIM, ylim: tuple = MANDELBROT_YLIM, 
         diverging = np.absolute(z) > 2
 
         # If there is no point diverging, leave the loop
-        if np.all(~diverging):
+        if np.all(~diverging) and i > 25:
             break
 
         new_point = color == -1
