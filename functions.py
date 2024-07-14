@@ -32,16 +32,9 @@ def fractal(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=S
     zoom: the amount of zoom                                                                        
     center_x: x coordinate of the center point of the figure                                                        
     center_y: y coordinate of the center point of the figure'''
-    
-    if type(center_x) == type(None):
-        dx = (sum(DEFAULT_XLIM))/2 - (sum(DEFAULT_XLIM)/zoom)/2
-    else:
-        dx = center_x - (sum(DEFAULT_XLIM)/zoom)/2
-
-    if type(center_y) == type(None):
-        dy = (sum(DEFAULT_YLIM))/2 - (sum(DEFAULT_YLIM)/zoom)/2
-    else:   
-        dy = center_y - (sum(DEFAULT_YLIM)/zoom)/2
+    # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
+    dx = center_displacement(DEFAULT_XLIM, center_x, zoom)
+    dy = center_displacement(DEFAULT_YLIM, center_y, zoom)
 
     # Grid of points
     x = np.linspace(DEFAULT_XLIM[0]/zoom + dx, DEFAULT_XLIM[1]/zoom + dx, n_points, dtype=np.float64)
@@ -146,15 +139,8 @@ def MandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_
     center_x: x coordinate of the center point of the figure                                                        
     center_y: y coordinate of the center point of the figure'''
     # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
-    if type(center_x) == type(None):
-        dx = (sum(MANDELBROT_XLIM))/2 - (sum(MANDELBROT_XLIM)/zoom)/2
-    else:
-        dx = center_x - (sum(MANDELBROT_XLIM)/zoom)/2
-
-    if type(center_y) == type(None):
-        dy = (sum(MANDELBROT_YLIM))/2 - (sum(MANDELBROT_YLIM)/zoom)/2
-    else:   
-        dy = center_y - (sum(MANDELBROT_YLIM)/zoom)/2
+    dx = center_displacement(MANDELBROT_XLIM, center_x, zoom)
+    dy = center_displacement(MANDELBROT_YLIM, center_y, zoom)
     
     a = np.linspace(MANDELBROT_XLIM[0]/zoom + dx, MANDELBROT_XLIM[1]/zoom + dx, n_points, dtype=np.float64)
     b = np.linspace(MANDELBROT_YLIM[0]/zoom + dy, MANDELBROT_YLIM[1]/zoom + dy, n_points, dtype=np.float64)
@@ -201,3 +187,11 @@ def MandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_
     return c_start, color       
     
 
+
+def center_displacement(limits, center, zoom):
+    if type(center) == type(None):
+        displ = (sum(limits))/2 - (sum(limits)/zoom)/2
+    else:
+        displ = center - (sum(limits)/zoom)/2
+
+    return displ
