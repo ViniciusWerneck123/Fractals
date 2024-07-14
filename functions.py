@@ -4,8 +4,18 @@ import matplotlib.cm as cm
 from itertools import product
 from typing import Tuple
 
+DEFAULT_XLIM = [-1.5, 1.5]
+DEFAULT_YLIM = [-1.5, 1.5]
+MANDELBROT_XLIM = [-2, 0.5]
+MANDELBROT_YLIM = [-1.2, 1.2]
+N_POINTS = 750
+STOP_STEP = 100
+CMAP = 'viridis'
+INTERIOR_COLOR = [0, 0, 0] # RGB
+GRAPH_WIDTH = 9
 
-def fractal(c: complex, xlim: tuple, ylim: tuple, n_points: int, forced_stop=False, stop_step=100, cmap='viridis', interior_color=[0, 0, 0]) -> Tuple[np.array, np.array, np.array]:
+def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
+            interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                                                                                                                     
     xlim: tuple with lower and upper limit for x axes.                                                         
@@ -39,6 +49,7 @@ def fractal(c: complex, xlim: tuple, ylim: tuple, n_points: int, forced_stop=Fal
         # if point diverge, the value, color = i -> the number of the iteration it took to diverge
         diverging = np.absolute(z) > 2
 
+        # If there is no point diverging, leave the loop
         if np.all(~diverging):
             break
 
@@ -59,12 +70,12 @@ def fractal(c: complex, xlim: tuple, ylim: tuple, n_points: int, forced_stop=Fal
     for i in range(3):
         color[converging, i] = interior_color[i]
 
-    plot_set(z_start, color)
+    plot_set(z_start, color, clean_plot=clean_plot, width=width)
     return z_start, color
 
 
 
-def plot_set(z, color, s=0.5, clean_plot=True, width=9):
+def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
     x = np.real(z)
     y = np.imag(z)
 
@@ -80,7 +91,9 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=9):
     # Leave the plot only with a black edge
     if clean_plot:
         plt.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
+        plt.axis('off')
 
+    plt.tight_layout()
     plt.show()
 
     return f, plt.gca()
@@ -97,7 +110,8 @@ def newtonIteration(x, y, a, b):
 
 
 
-def MandelbrotSet(xlim: tuple, ylim: tuple, n_points: int, forced_stop=False, stop_step=100, cmap='viridis', interior_color=[0, 0, 0]):
+def MandelbrotSet(xlim: tuple = MANDELBROT_XLIM, ylim: tuple = MANDELBROT_YLIM, n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
+                  interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
 
@@ -127,6 +141,7 @@ def MandelbrotSet(xlim: tuple, ylim: tuple, n_points: int, forced_stop=False, st
         z = z**2 + c
         diverging = np.absolute(z) > 2
 
+        # If there is no point diverging, leave the loop
         if np.all(~diverging):
             break
 
@@ -147,7 +162,7 @@ def MandelbrotSet(xlim: tuple, ylim: tuple, n_points: int, forced_stop=False, st
     for i in range(3):
         color[converging, i] = interior_color[i]
 
-    plot_set(c_start, color)
+    plot_set(c_start, color, clean_plot=clean_plot, width=width)
     return c_start, color       
     
 

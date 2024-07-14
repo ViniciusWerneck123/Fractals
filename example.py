@@ -8,9 +8,9 @@ graph limits:
 x: {-1.5, 1.5}
 y: {-1.5, 1.5}
 750x750 matrix of points'''
-a, b = -0.64, 0
+a, b = 0.285, 0.01
 c = complex(a, b)
-z, color = fractal(c, [-1.5, 1.5], [-1.5, 1.5], 750, cmap='viridis')
+z, color = fractal(c, n_points=1000, clean_plot=False)
 
 
-z, color = MandelbrotSet([-2.2, 0.8], [-1.2, 1.2], 500)
+#z, color = MandelbrotSet(n_points=750, clean_plot=False)
