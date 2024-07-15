@@ -3,7 +3,7 @@ A little program that i created to plot fractals.
 
 Plotting the Julia set for c = 1 - golden ratio:
 
-![juliaset_1](https://github.com/user-attachments/assets/b99c8869-17d4-4d7c-9a72-86035a667963)
+![juliaset_1](https://github.com/user-attachments/assets/65bbea49-0965-4a32-a916-2dcb21b16dd9)
 
 
 Julia set for c = 0.285 - 0.01i
