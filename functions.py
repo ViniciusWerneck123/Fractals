@@ -70,16 +70,7 @@ def juliaSet(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=
         
         i += 1
 
-    # Index of points that converge until the last iteration
-    converging = color == -1
-
-    # Merge colors
-    cmap_ = cm.get_cmap(cmap)
-    color = cmap_(color/color.max())
-    
-    # Color of points that converge until last iteration will have a black color
-    for i in range(3):
-        color[converging, i] = interior_color[i]
+    color = color_points(color, cmap, interior_color)
 
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
     return z_start, color
@@ -162,16 +153,7 @@ def mandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_
 
         i += 1
 
-    # Index of points that converge until the last iteration
-    converging = color == -1
-
-    # Merge colors
-    cmap = cm.get_cmap(cmap)
-    color = cmap(color/color.max())
-    
-    # Color of points that converge until last iteration
-    for i in range(3):
-        color[converging, i] = interior_color[i]
+    color = color_points(color, cmap, interior_color)
 
     plot_set(c_start, color, clean_plot=clean_plot, width=width)
     return c_start, color       
@@ -185,3 +167,19 @@ def center_displacement(limits, center, zoom):
         displ = center - (sum(limits)/zoom)/2
 
     return displ
+
+
+
+def color_points(color, cmap, interior_color):
+    # Index of points that converge until the last iteration
+    converging = color == -1
+
+    # Merge colors
+    cmap = cm.get_cmap(cmap)
+    color = cmap(color/color.max())
+    
+    # Color of points that converge until last iteration
+    for i in range(3):
+        color[converging, i] = interior_color[i]
+    
+    return color
