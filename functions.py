@@ -15,7 +15,7 @@ INTERIOR_COLOR = [0, 0, 0] # RGB
 GRAPH_WIDTH = 9
 MINIMUM_ITERATIONS = 25
 
-def fractal(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
+def juliaSet(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
             interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH,
             zoom=1, center_x=None, center_y=None) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
@@ -111,17 +111,7 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
 
 
 
-def newtonIteration(x, y, a, b):
-    '''Newton iteration formula for root calculation
-    z = z - P(z)/P'(z)
-    where P(z) = z³ - 1'''
-    xk = (x**3 - 3*x*y**2) / (3*(x**2 + y**2)**3) + 2/3
-    yk = (3*x**2 * y - y**3) / (3*(x**2 + y**2)**3)
-    return xk, yk
-
-
-
-def MandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
+def mandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
                   interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH,
                   zoom=1, center_x=None, center_y=None):
     '''Generate the points and color of the Mandelbrot set                                                      
