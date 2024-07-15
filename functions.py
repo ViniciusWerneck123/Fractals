@@ -71,34 +71,10 @@ def julia(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=STO
         i += 1
 
     color = color_points(color, cmap, interior_color)
-
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
+
     return z_start, color
 
-
-
-def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
-    x = np.real(z)
-    y = np.imag(z)
-
-    # Calculate aspect ratio based on the limits of the axes
-    dx = x.max() - x.min()
-    dy = y.max() - y.min()
-    aspect_ratio = dx/dy
-
-    f = plt.figure(figsize=(width, width/aspect_ratio))
-
-    plt.scatter(x, y, s=s, c=color)
-
-    # Leave the plot only with a black edge
-    if clean_plot:
-        plt.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
-        plt.axis('off')
-
-    plt.tight_layout()
-    plt.show()
-
-    return f, plt.gca()
 
 
 
@@ -154,10 +130,37 @@ def mandelbrot(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STE
         i += 1
 
     color = color_points(color, cmap, interior_color)
-
     plot_set(c_start, color, clean_plot=clean_plot, width=width)
+
     return c_start, color       
     
+
+
+
+def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
+    x = np.real(z)
+    y = np.imag(z)
+
+    # Calculate aspect ratio based on the limits of the axes
+    dx = x.max() - x.min()
+    dy = y.max() - y.min()
+    aspect_ratio = dx/dy
+
+    f = plt.figure(figsize=(width, width/aspect_ratio))
+
+    plt.scatter(x, y, s=s, c=color)
+
+    # Leave the plot only with a black edge
+    if clean_plot:
+        plt.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
+        plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+    return f, plt.gca()
+
+
 
 
 def center_displacement(limits, center, zoom):
@@ -167,6 +170,7 @@ def center_displacement(limits, center, zoom):
         displ = center - (sum(limits)/zoom)/2
 
     return displ
+
 
 
 
