@@ -13,23 +13,32 @@ STOP_STEP = 100
 CMAP = 'viridis'
 INTERIOR_COLOR = [0, 0, 0] # RGB
 GRAPH_WIDTH = 9
+MINIMUM_ITERATIONS = 25
 
-def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP,
-            cmap=CMAP, interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH) -> Tuple[np.array, np.array, np.array]:
+def juliaSet(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
+            interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH,
+            zoom=1, center_x=None, center_y=None) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
-    Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                                                                                                                     
-    xlim: tuple with lower and upper limit for x axes.                                                         
-    ylim: tuple with lower and upper limit for y axes.                                                  
+    Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
+    c: the complex constant value of the sequence.
     n_points: number of lines and columns in the square grid of points.                                                     
     forced_stop: if the user wants to run the fractal faster but in a incomplete way. Sometimes the fractals take long to calculate, this can be used
     to end the convergence loop before the stop condition.                                                                          
     stop_step: the value of the iteration the user wants to force the calculation to stop.                                                      
     cmap: cmap used for coloring the fractal. Default to viridis.                                                       
-    interior_color: color in RGB of points that converge. Default to black'''
+    interior_color: color in RGB of points that converge. Default to black                                                              
+    clean_plot: if the image is displayed without the axis labels. Default True                                                                 
+    width: width of the figure                                                                              
+    zoom: the amount of zoom                                                                        
+    center_x: x coordinate of the center point of the figure                                                        
+    center_y: y coordinate of the center point of the figure'''
+    # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
+    dx = center_displacement(DEFAULT_XLIM, center_x, zoom)
+    dy = center_displacement(DEFAULT_YLIM, center_y, zoom)
 
     # Grid of points
-    x = np.linspace(xlim[0], xlim[1], n_points, dtype=np.float64)
-    y = np.linspace(ylim[0], ylim[1], n_points, dtype=np.float64)
+    x = np.linspace(DEFAULT_XLIM[0]/zoom + dx, DEFAULT_XLIM[1]/zoom + dx, n_points, dtype=np.float64)
+    y = np.linspace(DEFAULT_YLIM[0]/zoom + dy, DEFAULT_YLIM[1]/zoom + dy, n_points, dtype=np.float64)
     values = product(x, y)
 
     del x, y
@@ -52,25 +61,16 @@ def fractal(c: complex, xlim: tuple = DEFAULT_XLIM, ylim: tuple = DEFAULT_YLIM, 
         diverging = np.absolute(z) > 2
 
         # If there is no point diverging, leave the loop
-        if np.all(~diverging) and i > 25:
+        if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
             break
 
         new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + np.log(i), color)
+        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
         
         i += 1
 
-    # Index of points that converge until the last iteration
-    converging = color == -1
-
-    # Merge colors
-    cmap_ = cm.get_cmap(cmap)
-    color = cmap_(color/color.max())
-    
-    # Color of points that converge until last iteration will have a black color
-    for i in range(3):
-        color[converging, i] = interior_color[i]
+    color = color_points(color, cmap, interior_color)
 
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
     return z_start, color
@@ -102,35 +102,35 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
 
 
 
-def newtonIteration(x, y, a, b):
-    '''Newton iteration formula for root calculation
-    z = z - P(z)/P'(z)
-    where P(z) = z³ - 1'''
-    xk = (x**3 - 3*x*y**2) / (3*(x**2 + y**2)**3) + 2/3
-    yk = (3*x**2 * y - y**3) / (3*(x**2 + y**2)**3)
-    return xk, yk
-
-
-
-def MandelbrotSet(xlim: tuple = MANDELBROT_XLIM, ylim: tuple = MANDELBROT_YLIM, n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
-                  interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH):
+def mandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
+                  interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH,
+                  zoom=1, center_x=None, center_y=None):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
 
-    xlim/ylim: limits for the points.                                                       
-    n_points: number of points of the n_points x n_points matrix.                                                               
+    n_points: number of lines and columns in the square grid of points.                                                               
     forced_stop: if the user wants to run the fractal faster but in a incomplete way. Sometimes the fractals take long to calculate, this can be used
     to end the convergence loop before the stop condition.                                                                          
     stop_step: the value of the iteration the user wants to force the calculation to stop.                                                  
     cmap: cmap used for coloring the fractal. Default to viridis.                                                   
-    interior_color: color in RGB of points that converge. Default to black'''
-    a, b = np.linspace(xlim[0], xlim[1], n_points, dtype=np.float64), np.linspace(ylim[0], ylim[1], n_points, dtype=np.float64)
+    interior_color: color in RGB of points that converge. Default to black ([0, 0, 0])                                                          
+    clean_plot: if the image is displayed without the axis labels. Default True                                                                 
+    width: width of the figure                                                                              
+    zoom: the amount of zoom                                                                        
+    center_x: x coordinate of the center point of the figure                                                        
+    center_y: y coordinate of the center point of the figure'''
+    # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
+    dx = center_displacement(MANDELBROT_XLIM, center_x, zoom)
+    dy = center_displacement(MANDELBROT_YLIM, center_y, zoom)
+    
+    a = np.linspace(MANDELBROT_XLIM[0]/zoom + dx, MANDELBROT_XLIM[1]/zoom + dx, n_points, dtype=np.float64)
+    b = np.linspace(MANDELBROT_YLIM[0]/zoom + dy, MANDELBROT_YLIM[1]/zoom + dy, n_points, dtype=np.float64)
     
     # Complex grid
     c_start = np.array([complex(i[0], i[1]) for i in product(a, b)])
     
     # Color matrix
-    color = np.ones(c_start.shape)*-1
+    color = -np.ones(c_start.shape)
 
     z = c_start
     c = c_start
@@ -144,17 +144,40 @@ def MandelbrotSet(xlim: tuple = MANDELBROT_XLIM, ylim: tuple = MANDELBROT_YLIM, 
         diverging = np.absolute(z) > 2
 
         # If there is no point diverging, leave the loop
-        if np.all(~diverging) and i > 25:
+        if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
             break
 
         new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + np.log(i), color)
+        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
 
         i += 1
 
+    color = color_points(color, cmap, interior_color)
+
+    plot_set(c_start, color, clean_plot=clean_plot, width=width)
+    return c_start, color       
+    
+
+
+def center_displacement(limits, center, zoom):
+    if type(center) == type(None):
+        displ = (sum(limits))/2 - (sum(limits)/zoom)/2
+    else:
+        displ = center - (sum(limits)/zoom)/2
+
+    return displ
+
+
+
+def color_points(color, cmap, interior_color):
     # Index of points that converge until the last iteration
     converging = color == -1
+    
+    # Apply color banding
+    color[converging] = np.nan
+    color = np.where(~converging, np.log(color), color)
+    color[converging] = -1
 
     # Merge colors
     cmap = cm.get_cmap(cmap)
@@ -163,8 +186,5 @@ def MandelbrotSet(xlim: tuple = MANDELBROT_XLIM, ylim: tuple = MANDELBROT_YLIM, 
     # Color of points that converge until last iteration
     for i in range(3):
         color[converging, i] = interior_color[i]
-
-    plot_set(c_start, color, clean_plot=clean_plot, width=width)
-    return c_start, color       
     
-
+    return color
