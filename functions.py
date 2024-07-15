@@ -66,7 +66,7 @@ def juliaSet(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=
 
         new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + np.log(i), color)
+        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
         
         i += 1
 
@@ -130,7 +130,7 @@ def mandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_
     c_start = np.array([complex(i[0], i[1]) for i in product(a, b)])
     
     # Color matrix
-    color = np.ones(c_start.shape)*-1
+    color = -np.ones(c_start.shape)
 
     z = c_start
     c = c_start
@@ -149,7 +149,7 @@ def mandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_
 
         new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + np.log(i), color)
+        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
 
         i += 1
 
@@ -173,6 +173,11 @@ def center_displacement(limits, center, zoom):
 def color_points(color, cmap, interior_color):
     # Index of points that converge until the last iteration
     converging = color == -1
+    
+    # Apply color banding
+    color[converging] = np.nan
+    color = np.where(~converging, np.log(color), color)
+    color[converging] = -1
 
     # Merge colors
     cmap = cm.get_cmap(cmap)
