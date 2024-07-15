@@ -15,7 +15,7 @@ INTERIOR_COLOR = [0, 0, 0] # RGB
 GRAPH_WIDTH = 9
 MINIMUM_ITERATIONS = 25
 
-def juliaSet(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
+def julia(c: complex, n_points: int = N_POINTS, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
             interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH,
             zoom=1, center_x=None, center_y=None) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
@@ -102,7 +102,7 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
 
 
 
-def mandelbrotSet(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
+def mandelbrot(n_points: int = N_POINTS, forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
                   interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH,
                   zoom=1, center_x=None, center_y=None):
     '''Generate the points and color of the Mandelbrot set                                                      
