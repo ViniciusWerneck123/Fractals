@@ -8,11 +8,9 @@ Plotting the Julia set for c = 1 - golden ratio:
 
 Julia set for c = 0.285 - 0.01i
 
-![juliaset_2](https://github.com/user-attachments/assets/b7652238-895e-4487-bb3a-dbb301a3edd4)
+![juliaset_2](https://github.com/user-attachments/assets/2c68e7ae-0265-4da3-8d7e-006ff189c9ba)
 
 
 Plotting the Mandelbrot set:
 
-![mandelbrot](https://github.com/user-attachments/assets/5bb17345-245b-4ece-b87b-e6ece10adec0)
-
-
+![mandelbrot](https://github.com/user-attachments/assets/c34ced51-6260-4227-8f32-ad2de2587ef9)
