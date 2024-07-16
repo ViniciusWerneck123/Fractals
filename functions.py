@@ -55,7 +55,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
         z = z**2 + c
         # Update color based on convergence:
         # if point diverge, the value, color = i -> the number of the iteration it took to diverge
-        diverging = np.dot(z, z) > 2
+        diverging = np.absolute(z) > 2
 
         if forced_stop:
             if stop_step == i:
@@ -120,7 +120,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     i = 1
     while True:
         z = z**2 + c
-        diverging = np.dot(z, z) > 4
+        diverging = np.absolute(z) > 2
 
         if forced_stop:
             if stop_step == i:
