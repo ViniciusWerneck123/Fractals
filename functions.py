@@ -206,7 +206,7 @@ def color_points(color, cmap, converging_color):
 
 
 def check_dpi(width, dpi):
-    value = input(f'\n\nFractal generator\n\nUsing a dpi of {dpi}, the grid points have {width*dpi}x{width*dpi} = {(width*dpi)**2} points.
+    value = input(f'\n\nFractal generator\n\nUsing a dpi of {dpi}, the grid points have {width*dpi}x{width*dpi} = {(width*dpi)**2} points.\
                   \nDo you want to continue?\n\n(y/n)\n')
 
     if value == 'y':
