@@ -78,7 +78,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     del diverging, new_point
 
     end_time = time.time()
-    evaluate_elapsed_time(start_time, end_time)
+    evaluate_elapsed_time(start_time, end_time, i)
 
     color = color_points(color, cmap, converging_color)
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
@@ -148,7 +148,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     del diverging
 
     end_time = time.time()
-    evaluate_elapsed_time(start_time, end_time)
+    evaluate_elapsed_time(start_time, end_time, i)
 
     color = color_points(color, cmap, converging_color)
     plot_set(c_start, color, clean_plot=clean_plot, width=width)
@@ -173,7 +173,7 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=N
 
     ax.scatter(x, y, s=s, c=color)
 
-    # Leave the plot only with a black edge
+    # Leave the plot without lines and labels
     if clean_plot:
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
@@ -218,7 +218,8 @@ def color_points(color, cmap, converging_color):
 
 
 def check_dpi(width, dpi):
-    value = input(f'\n\nFractal generator\n\nUsing a dpi of {dpi}, the grid points have {width*dpi}x{width*dpi} = {(width*dpi)**2} points.\
+    value = input(f'\n************************ Fractal generator ************************\
+                  \n\nUsing a dpi of {dpi}, the grid has {width*dpi:.0f}x{width*dpi:.0f} = {(width*dpi)**2} points.\
                   \nDo you want to continue?\n\n(y/n)\n')
 
     if value == 'y':
@@ -230,6 +231,8 @@ def check_dpi(width, dpi):
         check_dpi(width, dpi)
 
 
-def evaluate_elapsed_time(start, end):
+def evaluate_elapsed_time(start, end, n_iterations):
     elapsed_time = end - start
-    print(f'\nElapsed time: {elapsed_time:.2f} s')
+    print(f'\nElapsed time: {elapsed_time:.2f} s\
+          \nNumber of iterations: {n_iterations}\
+          \n*******************************************************************')
