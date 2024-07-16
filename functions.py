@@ -9,6 +9,7 @@ DEFAULT_XLIM = [-1.5, 1.5]
 DEFAULT_YLIM = [-1.5, 1.5]
 MANDELBROT_XLIM = [-2, 0.5]
 MANDELBROT_YLIM = [-1.2, 1.2]
+DEFAULT_DPI = 100
 STOP_STEP = 100
 CMAP = 'viridis'
 INTERIOR_COLOR = None # [r, g, b]
@@ -16,7 +17,7 @@ GRAPH_WIDTH = 9
 MINIMUM_ITERATIONS = 25
 
 def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
-            converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=100,
+            converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=DEFAULT_DPI,
             zoom=1, center_x=None, center_y=None) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
@@ -88,7 +89,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
 
 def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
-                converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=100,
+                converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=DEFAULT_DPI,
                 zoom=1, center_x=None, center_y=None):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
