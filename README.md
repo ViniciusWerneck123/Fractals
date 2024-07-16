@@ -17,6 +17,6 @@ Julia set for c = 0.285 - 0.01i
 
 Plotting the Mandelbrot set:
 
-`mandelbrot(cmap='binary_r', interior_color=[1,1,1], dpi=100)`
+`mandelbrot(cmap='binary_r', dpi=100)`
 
 ![mandelbrot](https://github.com/user-attachments/assets/c34ced51-6260-4227-8f32-ad2de2587ef9)
