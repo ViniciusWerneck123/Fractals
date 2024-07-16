@@ -140,8 +140,8 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
                 break
 
         new_point = color == -1
-        z[diverging] = np.nan
         color[np.logical_and(diverging, new_point)] = i
+        z[diverging] = np.nan
 
         i += 1
     
