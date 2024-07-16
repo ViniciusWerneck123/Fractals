@@ -71,7 +71,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
         new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
+        color[np.logical_and(diverging, new_point)] = i
         
         i += 1
 
@@ -141,7 +141,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
 
         new_point = color == -1
         z[diverging] = np.nan
-        color = np.where(np.logical_and(diverging, new_point), np.zeros(color.shape) + i, color)
+        color[np.logical_and(diverging, new_point)] = i
 
         i += 1
     
