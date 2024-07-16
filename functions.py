@@ -34,6 +34,8 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     center_y: y coordinate of the center point of the figure'''
     check_dpi(width, dpi)
 
+    start_time = time.time()
+
     # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
     dx = center_displacement(DEFAULT_XLIM, center_x, zoom)
     dy = center_displacement(DEFAULT_YLIM, center_y, zoom)
@@ -73,6 +75,9 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
         i += 1
 
     del diverging, new_point
+
+    end_time = time.time()
+    evaluate_elapsed_time(start_time, end_time)
 
     color = color_points(color, cmap, converging_color)
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
