@@ -10,12 +10,12 @@ MANDELBROT_XLIM = [-2, 0.5]
 MANDELBROT_YLIM = [-1.2, 1.2]
 STOP_STEP = 100
 CMAP = 'viridis'
-INTERIOR_COLOR = [0, 0, 0] # RGB
+INTERIOR_COLOR = None # [r, g, b]
 GRAPH_WIDTH = 9
 MINIMUM_ITERATIONS = 25
 
 def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
-            interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=100,
+            converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=100,
             zoom=1, center_x=None, center_y=None) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
@@ -24,7 +24,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     to end the convergence loop before the stop condition.                                                                          
     stop_step: the value of the iteration the user wants to force the calculation to stop.                                                      
     cmap: cmap used for coloring the fractal. Default to viridis.                                                       
-    interior_color: color in RGB of points that converge. Default to black                                                              
+    converging_color: [r, g, b] - list color in RGB of points that converge. Default to last color in cmap                                                              
     clean_plot: if the image is displayed without the axis labels. Default True                                                                 
     width: width of the figure                                                                              
     dpi: dots per inches of figure
@@ -52,18 +52,18 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     z = z_start
     i = 1
     while True:
-        if forced_stop:
-            if stop_step == i:
-                break
-
         z = z**2 + c
         # Update color based on convergence:
         # if point diverge, the value, color = i -> the number of the iteration it took to diverge
         diverging = np.absolute(z) > 2
 
-        # If there is no point diverging, leave the loop
-        if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
-            break
+        if forced_stop:
+            if stop_step == i:
+                break
+        else:
+            # If there is no point diverging, leave the loop
+            if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
+                break
 
         new_point = color == -1
         z[diverging] = np.nan
@@ -73,7 +73,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
     del diverging, new_point
 
-    color = color_points(color, cmap, interior_color)
+    color = color_points(color, cmap, converging_color)
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
 
     return z_start, color
@@ -82,7 +82,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
 
 def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
-                interior_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=100,
+                converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=100,
                 zoom=1, center_x=None, center_y=None):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
@@ -91,7 +91,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     to end the convergence loop before the stop condition.                                                                          
     stop_step: the value of the iteration the user wants to force the calculation to stop.                                                  
     cmap: cmap used for coloring the fractal. Default to viridis.                                                   
-    interior_color: color in RGB of points that converge. Default to black ([0, 0, 0])                                                          
+    converging_color: color in RGB of points that converge. Default to black ([0, 0, 0])                                                          
     clean_plot: if the image is displayed without the axis labels. Default True                                                                 
     width: width of the figure                                                                              
     dpi: dots per inches of figure
@@ -119,16 +119,16 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     c = c_start
     i = 1
     while True:
-        if forced_stop:
-            if stop_step == i:
-                break
-
         z = z**2 + c
         diverging = np.absolute(z) > 2
 
-        # If there is no point diverging, leave the loop
-        if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
-            break
+        if forced_stop:
+            if stop_step == i:
+                break
+        else:
+            # If there is no point diverging, leave the loop
+            if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
+                break
 
         new_point = color == -1
         z[diverging] = np.nan
@@ -138,7 +138,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     
     del diverging
 
-    color = color_points(color, cmap, interior_color)
+    color = color_points(color, cmap, converging_color)
     plot_set(c_start, color, clean_plot=clean_plot, width=width)
 
     return c_start, color       
@@ -183,22 +183,21 @@ def center_displacement(limits, center, zoom):
 
 
 
-def color_points(color, cmap, interior_color):
+def color_points(color, cmap, converging_color):
     # Index of points that converge until the last iteration
     converging = color == -1
     
     # Apply color banding
-    color[converging] = np.nan
-    color = np.where(~converging, np.log(color), color)
-    color[converging] = -1
+    color[converging] = color.max()
+    color = np.log(color)/np.log(color.max())
 
     # Merge colors
     cmap = cm.get_cmap(cmap)
-    color = cmap(color/color.max())
+    color = cmap(color)
     
     # Color of points that converge until last iteration
-    for i in range(3):
-        color[converging, i] = interior_color[i]
+    #for i in range(3):
+        #color[converging, i] = converging_color[i]
     
     return color
 
