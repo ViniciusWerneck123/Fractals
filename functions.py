@@ -196,8 +196,9 @@ def color_points(color, cmap, converging_color):
     color = cmap(color)
     
     # Color of points that converge until last iteration
-    #for i in range(3):
-        #color[converging, i] = converging_color[i]
+    if converging_color != None:
+        for i in range(3):
+            color[converging, i] = converging_color[i]
     
     return color
 

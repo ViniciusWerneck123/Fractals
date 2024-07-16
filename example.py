@@ -13,4 +13,4 @@ c = complex(a, b)
 #z, color = julia(c, clean_plot=True, zoom=1, center_x=None, center_y=None, dpi=100)
 
 
-z, color = mandelbrot(clean_plot=True, cmap='binary_r', interior_color=[1,1,1], zoom=1, center_x=None, center_y=None, dpi=100)
+z, color = mandelbrot(clean_plot=True, cmap='binary', converging_color=None, zoom=1, center_x=None, center_y=None, dpi=100)
