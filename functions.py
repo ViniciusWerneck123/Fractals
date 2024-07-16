@@ -146,7 +146,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
 
 
 
-def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
+def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=None):
     x = np.real(z)
     y = np.imag(z)
 
@@ -155,19 +155,21 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH):
     dy = y.max() - y.min()
     aspect_ratio = dx/dy
 
-    f = plt.figure(figsize=(width, width/aspect_ratio))
+    if ax == None:
+        f = plt.figure(figsize=(width, width/aspect_ratio))
+        ax = plt.gca()
 
-    plt.scatter(x, y, s=s, c=color)
+    ax.scatter(x, y, s=s, c=color)
 
     # Leave the plot only with a black edge
     if clean_plot:
-        plt.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
-        plt.axis('off')
+        ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
+        ax.axis('off')
 
     plt.tight_layout()
     plt.show()
 
-    return f, plt.gca()
+    return f, ax
 
 
 
@@ -204,7 +206,8 @@ def color_points(color, cmap, converging_color):
 
 
 def check_dpi(width, dpi):
-    value = input(f'\n\nFractal generator\n\nUsing a dpi of {dpi}, the grid points have {width*dpi}x{width*dpi} = {(width*dpi)**2} points.\nDo you want to continue?\n\n(y/n)\n')
+    value = input(f'\n\nFractal generator\n\nUsing a dpi of {dpi}, the grid points have {width*dpi}x{width*dpi} = {(width*dpi)**2} points.
+                  \nDo you want to continue?\n\n(y/n)\n')
 
     if value == 'y':
         return
