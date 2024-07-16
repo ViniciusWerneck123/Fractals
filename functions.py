@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from itertools import product
@@ -100,6 +101,8 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     center_y: y coordinate of the center point of the figure'''
     check_dpi(width, dpi)
 
+    start_time = time.time()
+
     # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
     dx = center_displacement(MANDELBROT_XLIM, center_x, zoom)
     dy = center_displacement(MANDELBROT_YLIM, center_y, zoom)
@@ -137,6 +140,9 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
         i += 1
     
     del diverging
+
+    end_time = time.time()
+    evaluate_elapsed_time(start_time, end_time)
 
     color = color_points(color, cmap, converging_color)
     plot_set(c_start, color, clean_plot=clean_plot, width=width)
@@ -216,3 +222,8 @@ def check_dpi(width, dpi):
     else:
         print('Incorrect value!')
         check_dpi(width, dpi)
+
+
+def evaluate_elapsed_time(start, end):
+    elapsed_time = end - start
+    print(f'\nElapsed time: {elapsed_time:.2f} s')
