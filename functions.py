@@ -3,7 +3,6 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from itertools import product
-from typing import Tuple
 from screeninfo import get_monitors
 
 DEFAULT_XLIM = [-2, 2]
@@ -11,14 +10,13 @@ MANDELBROT_XLIM = [-2.5, 1.5]
 DEFAULT_DPI = 100
 STOP_STEP = 100
 CMAP = 'viridis'
-INTERIOR_COLOR = None # [r, g, b]
-GRAPH_WIDTH = 9
+INTERIOR_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
 MAXIMUM_ITERATIONS = 500
 
 def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
             converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
-            zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM) -> Tuple[np.array, np.array, np.array]:
+            zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM):
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
     c: the complex constant value of the sequence.                                               
@@ -28,11 +26,13 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     cmap: cmap used for coloring the fractal. Default to viridis.                                                       
     converging_color: [r, g, b] - list color in RGB of points that converge. Default to last color in cmap                                                              
     clean_plot: if the image is displayed without the axis labels. Default True                                                                 
-    width: width of the figure                                                                              
-    dpi: dots per inches of figure
-    zoom: the amount of zoom                                                                        
+    dpi: dots per inches of figure                                                                          
+    zoom: the amount of zoom. If specified, the values for center_x and center_y should be specified also.
+            If not, the center_x value will be the resultant one using default value of xlim and
+            center_y will be 0.                                                                                             
     center_x: x coordinate of the center point of the figure                                                        
-    center_y: y coordinate of the center point of the figure'''
+    center_y: y coordinate of the center point of the figure                                                    
+    xlim: x limits for the fractal. Default: [-2, 2]'''
     # Gets the value of inches of the monitor
     monitor = get_monitors()[0]
     width, height = round(monitor.width_mm/25.4, 1), round(monitor.height_mm/25.4, 1)
@@ -110,11 +110,13 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     cmap: cmap used for coloring the fractal. Default to viridis.                                                   
     converging_color: color in RGB of points that converge. Default to black ([0, 0, 0])                                                          
     clean_plot: if the image is displayed without the axis labels. Default True                                                                 
-    width: width of the figure                                                                              
-    dpi: dots per inches of figure
-    zoom: the amount of zoom                                                                        
-    center_x: x coordinate of the center point of the figure                                                        
-    center_y: y coordinate of the center point of the figure'''
+    dpi: dots per inches of figure                                                                      
+    zoom: the amount of zoom. If specified, the values for center_x and center_y should be specified also.
+            If not, the center_x value will be the resultant one using default value of xlim and
+            center_y will be 0.                                                                              
+    center_x: x coordinate of the center point of the figure.                                                        
+    center_y: y coordinate of the center point of the figure                                                                            
+    xlim: x limits for the fractal. Default: [-2.5, 1.5]'''
     # Gets the value of inches of the monitor
     monitor = get_monitors()[0]
     width, height = round(monitor.width_mm/25.4, 1), round(monitor.height_mm/25.4, 1)
@@ -123,6 +125,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     
     check_dpi(width, height, dpi)
 
+    # Calculates respective ylim with xlim and calculated aspect_ratio
     overall_y_height = np.sum(np.abs(np.array(xlim)))*aspect_ratio
     ylim = [-overall_y_height/2, overall_y_height/2]
 
@@ -191,8 +194,10 @@ def plot_set(color, clean_plot=True):
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
 
+    # Make figure occupy the whole screen
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
+
     plt.show()
 
     return f, ax
