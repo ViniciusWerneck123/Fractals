@@ -85,9 +85,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     # Necessary to correct the orientation of the figure
     color = color.T
 
-    color = color_points(color, cmap, converging_color)
-
-    plot_set(z_start, color, clean_plot=clean_plot, width=width)
+    plot_set(z_start, color, clean_plot=clean_plot, width=width, cmap=cmap)
 
     return z_start, color
 
@@ -160,15 +158,14 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     # Necessary to correct the orientation of image
     color = color.T
 
-    color = color_points(color, cmap, converging_color)
-    plot_set(c_start, color, clean_plot=clean_plot, width=width)
+    plot_set(c_start, color, clean_plot=clean_plot, width=width, cmap=cmap)
 
     return c_start, color       
     
 
 
 
-def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=None):
+def plot_set(z, color, cmap, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=None):
     x = np.real(z)
     y = np.imag(z)
 
@@ -182,7 +179,7 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=N
         ax = plt.gca()
 
     plt.tight_layout()
-    ax.imshow(color)
+    ax.imshow(color, cmap=cmap)
 
     # Leave the plot without lines and labels
     if clean_plot:
@@ -204,28 +201,6 @@ def center_displacement(limits, center, zoom):
 
     return displ
 
-
-
-
-def color_points(color, cmap, converging_color):
-    # Index of points that converge until the last iteration
-    converging = color == -1
-    
-    # Apply color banding
-    color[converging] = color.max()
-    #color = np.log(color)/np.log(color.max())
-    color = color/color.max()
-
-    # Merge colors
-    cmap = cm.get_cmap(cmap)
-    color = cmap(color)
-    
-    # Color of points that converge until last iteration
-    if converging_color != None:
-        for i in range(3):
-            color[converging, i] = converging_color[i]
-    
-    return color
 
 
 def check_dpi(width, dpi):
