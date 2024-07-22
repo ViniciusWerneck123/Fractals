@@ -14,6 +14,9 @@ INTERIOR_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
 MAXIMUM_ITERATIONS = 500
 
+
+
+
 def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
             converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
             zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM):
@@ -96,8 +99,6 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
 
 
-
-
 def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
                 converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
                 zoom=1, center_x=None, center_y=None, xlim=MANDELBROT_XLIM):
@@ -177,8 +178,6 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
 
     plot_set(color, clean_plot=clean_plot)
        
-    
-
 
 
 def plot_set(color, clean_plot=True):
