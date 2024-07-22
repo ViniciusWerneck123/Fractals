@@ -15,6 +15,7 @@ CMAP = 'viridis'
 INTERIOR_COLOR = None # [r, g, b]
 GRAPH_WIDTH = 9
 MINIMUM_ITERATIONS = 25
+MAXIMUM_ITERATIONS = 500
 
 def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
             converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=DEFAULT_DPI,
@@ -49,7 +50,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     del x, y
 
     # Complex grid
-    z_start = np.array([complex(i[0], i[1]) for i in values])
+    z_start = np.array([complex(i[0], i[1]) for i in values]).reshape((width*dpi, width*dpi))
 
     # Color of the converging points
     color = np.ones(z_start.shape)*-1
@@ -66,12 +67,13 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
                 break
         else:
             # If there is no point diverging, leave the loop
-            if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
+            if (np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom) or i == MAXIMUM_ITERATIONS:
                 break
 
         new_point = color == -1
+        sn = 1 - np.log10(np.absolute(z))/np.log10(2)
+        color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
         z[diverging] = np.nan
-        color[np.logical_and(diverging, new_point)] = i
         
         i += 1
 
@@ -79,8 +81,12 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
     end_time = time.time()
     evaluate_elapsed_time(start_time, end_time, i)
+    
+    # Necessary to correct the orientation of the figure
+    color = color.T
 
     color = color_points(color, cmap, converging_color)
+
     plot_set(z_start, color, clean_plot=clean_plot, width=width)
 
     return z_start, color
@@ -117,7 +123,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     b = np.linspace(MANDELBROT_YLIM[0]/zoom + dy, MANDELBROT_YLIM[1]/zoom + dy, width*dpi, dtype=np.float64)
     
     # Complex grid
-    c_start = np.array([complex(i[0], i[1]) for i in product(a, b)])
+    c_start = np.array([complex(i[0], i[1]) for i in product(a, b)]).reshape((width*dpi, width*dpi))
 
     del a, b
 
@@ -140,7 +146,8 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
                 break
 
         new_point = color == -1
-        color[np.logical_and(diverging, new_point)] = i
+        sn = 1 - np.log10(np.absolute(z))/np.log10(2)
+        color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
         z[diverging] = np.nan
 
         i += 1
@@ -149,6 +156,9 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
 
     end_time = time.time()
     evaluate_elapsed_time(start_time, end_time, i)
+
+    # Necessary to correct the orientation of image
+    color = color.T
 
     color = color_points(color, cmap, converging_color)
     plot_set(c_start, color, clean_plot=clean_plot, width=width)
@@ -171,14 +181,14 @@ def plot_set(z, color, s=0.5, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=N
         f = plt.figure(figsize=(width, width/aspect_ratio))
         ax = plt.gca()
 
-    ax.scatter(x, y, s=s, c=color)
+    plt.tight_layout()
+    ax.imshow(color)
 
     # Leave the plot without lines and labels
     if clean_plot:
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
 
-    plt.tight_layout()
     plt.show()
 
     return f, ax
@@ -203,7 +213,8 @@ def color_points(color, cmap, converging_color):
     
     # Apply color banding
     color[converging] = color.max()
-    color = np.log(color)/np.log(color.max())
+    #color = np.log(color)/np.log(color.max())
+    color = color/color.max()
 
     # Merge colors
     cmap = cm.get_cmap(cmap)
