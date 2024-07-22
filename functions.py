@@ -201,18 +201,28 @@ def plot_set(color, clean_plot=True):
 
 def color_points(color, cmap, converging_color):
     cmap = cm.get_cmap(cmap)
+    
+    # Necessary in order for the orientation to be right
     color = color.T
+
+    # Save the final shape of colors grid
     shape = tuple([*color.shape, 4])
 
+    # Flattening makes easy to change the color of converging points
     color = color.flatten()
     converging = color == -1
+
+    # Sets converging points to zero just for cmap method does not raises any error
+    # because the values should be between 0 and 1
     color[converging] = 0
 
     color = cmap(color/color.max())
 
+    # Change the color of converging points to the specified color
     for i in range(3):
         color[converging, i] = converging_color[i]
 
+    # Reshape the flattened array for the correct shape
     color = color.reshape(shape)
     return color
 
