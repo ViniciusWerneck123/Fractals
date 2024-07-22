@@ -8,7 +8,6 @@ from screeninfo import get_monitors
 DEFAULT_XLIM = [-2, 2]
 MANDELBROT_XLIM = [-2.5, 1.5]
 DEFAULT_DPI = 100
-STOP_STEP = 100
 CMAP = 'viridis'
 INTERIOR_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
@@ -17,7 +16,7 @@ MAXIMUM_ITERATIONS = 500
 
 
 
-def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
+def julia(c: complex, stop_iteration=None, cmap=CMAP,
             converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
             zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM):
     '''Function that return the points and colors for each point for the fractal.
@@ -25,7 +24,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     c: the complex constant value of the sequence.                                               
     forced_stop: if the user wants to run the fractal faster but in a incomplete way. Sometimes the fractals take long to calculate, this can be used
     to end the convergence loop before the stop condition.                                                                          
-    stop_step: the value of the iteration the user wants to force the calculation to stop.                                                      
+    stop_iteration: the value of the iteration the user wants to force the calculation to stop.                                                      
     cmap: cmap used for coloring the fractal. Default to viridis.                                                       
     converging_color: [r, g, b] - list color in RGB of points that converge. Default to last color in cmap                                                              
     clean_plot: if the image is displayed without the axis labels. Default True                                                                 
@@ -73,8 +72,8 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
         # if point diverge, the value, color = i -> the number of the iteration it took to diverge
         diverging = np.absolute(z) > 2
 
-        if forced_stop:
-            if stop_step == i:
+        if type(stop_iteration) != type(None):
+            if i >= stop_iteration:
                 break
         else:
             # If there is no point diverging, leave the loop
@@ -99,7 +98,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
 
 
 
-def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
+def mandelbrot(stop_iteration=None, cmap=CMAP,
                 converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
                 zoom=1, center_x=None, center_y=None, xlim=MANDELBROT_XLIM):
     '''Generate the points and color of the Mandelbrot set                                                      
@@ -107,7 +106,7 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
 
     forced_stop: if the user wants to run the fractal faster but in a incomplete way. Sometimes the fractals take long to calculate, this can be used
     to end the convergence loop before the stop condition.                                                                          
-    stop_step: the value of the iteration the user wants to force the calculation to stop.                                                  
+    stop_iteration: the value of the iteration the user wants to force the calculation to stop.                                                  
     cmap: cmap used for coloring the fractal. Default to viridis.                                                   
     converging_color: color in RGB of points that converge. Default to black ([0, 0, 0])                                                          
     clean_plot: if the image is displayed without the axis labels. Default True                                                                 
@@ -154,8 +153,8 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
         z = z**2 + c
         diverging = np.absolute(z) > 2
 
-        if forced_stop:
-            if stop_step == i:
+        if type(stop_iteration) != type(None):
+            if i >= stop_iteration:
                 break
         else:
             # If there is no point diverging, leave the loop
