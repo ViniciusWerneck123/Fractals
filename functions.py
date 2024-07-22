@@ -67,7 +67,7 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
                 break
         else:
             # If there is no point diverging, leave the loop
-            if (np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom) or i == MAXIMUM_ITERATIONS:
+            if np.all(~diverging) and i > MINIMUM_ITERATIONS * zoom:
                 break
 
         new_point = color == -1
@@ -179,7 +179,7 @@ def plot_set(z, color, cmap, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=No
         ax = plt.gca()
 
     plt.tight_layout()
-    ax.imshow(color, cmap=cmap)
+    ax.imshow(color, cmap=cmap, interpolation_stage='rgba')
 
     # Leave the plot without lines and labels
     if clean_plot:
