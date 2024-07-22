@@ -179,7 +179,7 @@ def plot_set(z, color, cmap, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=No
         ax = plt.gca()
 
     plt.tight_layout()
-    ax.imshow(color, cmap=cmap, interpolation_stage='rgba')
+    ax.imshow(color, cmap=cmap)
 
     # Leave the plot without lines and labels
     if clean_plot:
