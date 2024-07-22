@@ -4,11 +4,10 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from itertools import product
 from typing import Tuple
+from screeninfo import get_monitors
 
-DEFAULT_XLIM = [-1.5, 1.5]
-DEFAULT_YLIM = [-1.5, 1.5]
-MANDELBROT_XLIM = [-2, 0.5]
-MANDELBROT_YLIM = [-1.2, 1.2]
+DEFAULT_XLIM = [-2, 2]
+MANDELBROT_XLIM = [-2.5, 1.5]
 DEFAULT_DPI = 100
 STOP_STEP = 100
 CMAP = 'viridis'
@@ -18,8 +17,8 @@ MINIMUM_ITERATIONS = 25
 MAXIMUM_ITERATIONS = 500
 
 def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
-            converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=DEFAULT_DPI,
-            zoom=1, center_x=None, center_y=None) -> Tuple[np.array, np.array, np.array]:
+            converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
+            zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM) -> Tuple[np.array, np.array, np.array]:
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
     c: the complex constant value of the sequence.                                               
@@ -34,23 +33,32 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     zoom: the amount of zoom                                                                        
     center_x: x coordinate of the center point of the figure                                                        
     center_y: y coordinate of the center point of the figure'''
-    check_dpi(width, dpi)
+    # Gets the value of inches of the monitor
+    monitor = get_monitors()[0]
+    width, height = round(monitor.width_mm/25.4, 1), round(monitor.height_mm/25.4, 1)
+
+    aspect_ratio = height/width
+
+    check_dpi(width, height, dpi)
+
+    overall_y_height = np.sum(np.abs(np.array(xlim)))*aspect_ratio
+    ylim = [-overall_y_height/2, overall_y_height/2]
 
     start_time = time.time()
 
     # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
-    dx = center_displacement(DEFAULT_XLIM, center_x, zoom)
-    dy = center_displacement(DEFAULT_YLIM, center_y, zoom)
+    dx = center_displacement(xlim, center_x, zoom)
+    dy = center_displacement(ylim, center_y, zoom)
 
     # Grid of points
-    x = np.linspace(DEFAULT_XLIM[0]/zoom + dx, DEFAULT_XLIM[1]/zoom + dx, width*dpi, dtype=np.float64)
-    y = np.linspace(DEFAULT_YLIM[0]/zoom + dy, DEFAULT_YLIM[1]/zoom + dy, width*dpi, dtype=np.float64)
+    x = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, int(width*dpi), dtype=np.float64)
+    y = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, int(height*dpi), dtype=np.float64)
     values = product(x, y)
 
     del x, y
 
     # Complex grid
-    z_start = np.array([complex(i[0], i[1]) for i in values]).reshape((width*dpi, width*dpi))
+    z_start = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width*dpi), int(height*dpi)))
 
     # Color of the converging points
     color = np.ones(z_start.shape)*-1
@@ -85,16 +93,15 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     # Necessary to correct the orientation of the figure
     color = color.T
 
-    plot_set(z_start, color, clean_plot=clean_plot, width=width, cmap=cmap)
+    plot_set(color, clean_plot=clean_plot, cmap=cmap)
 
-    return z_start, color
 
 
 
 
 def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
-                converging_color=INTERIOR_COLOR, clean_plot=True, width=GRAPH_WIDTH, dpi=DEFAULT_DPI,
-                zoom=1, center_x=None, center_y=None):
+                converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
+                zoom=1, center_x=None, center_y=None, xlim=MANDELBROT_XLIM):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
 
@@ -109,19 +116,28 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     zoom: the amount of zoom                                                                        
     center_x: x coordinate of the center point of the figure                                                        
     center_y: y coordinate of the center point of the figure'''
-    check_dpi(width, dpi)
+    # Gets the value of inches of the monitor
+    monitor = get_monitors()[0]
+    width, height = round(monitor.width_mm/25.4, 1), round(monitor.height_mm/25.4, 1)
+
+    aspect_ratio = height/width
+    
+    check_dpi(width, height, dpi)
+
+    overall_y_height = np.sum(np.abs(np.array(xlim)))*aspect_ratio
+    ylim = [-overall_y_height/2, overall_y_height/2]
 
     start_time = time.time()
 
     # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
-    dx = center_displacement(MANDELBROT_XLIM, center_x, zoom)
-    dy = center_displacement(MANDELBROT_YLIM, center_y, zoom)
+    dx = center_displacement(xlim, center_x, zoom)
+    dy = center_displacement(ylim, center_y, zoom)
     
-    a = np.linspace(MANDELBROT_XLIM[0]/zoom + dx, MANDELBROT_XLIM[1]/zoom + dx, width*dpi, dtype=np.float64)
-    b = np.linspace(MANDELBROT_YLIM[0]/zoom + dy, MANDELBROT_YLIM[1]/zoom + dy, width*dpi, dtype=np.float64)
+    a = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, int(width*dpi), dtype=np.float64)
+    b = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, int(height*dpi), dtype=np.float64)
     
     # Complex grid
-    c_start = np.array([complex(i[0], i[1]) for i in product(a, b)]).reshape((width*dpi, width*dpi))
+    c_start = np.array([complex(i[0], i[1]) for i in product(a, b)]).reshape((int(width*dpi), int(height*dpi)))
 
     del a, b
 
@@ -158,27 +174,18 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
     # Necessary to correct the orientation of image
     color = color.T
 
-    plot_set(c_start, color, clean_plot=clean_plot, width=width, cmap=cmap)
-
-    return c_start, color       
+    plot_set(color, cmap=cmap, clean_plot=clean_plot)
+       
     
 
 
 
-def plot_set(z, color, cmap, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=None):
-    x = np.real(z)
-    y = np.imag(z)
+def plot_set(color, cmap, clean_plot=True):
+    f = plt.figure()
+    
+    # Add axes with the size of the figure
+    ax = f.add_axes([0, 0, 1, 1])
 
-    # Calculate aspect ratio based on the limits of the axes
-    dx = x.max() - x.min()
-    dy = y.max() - y.min()
-    aspect_ratio = dx/dy
-
-    if ax == None:
-        f = plt.figure(figsize=(width, width/aspect_ratio))
-        ax = plt.gca()
-
-    plt.tight_layout()
     ax.imshow(color, cmap=cmap)
 
     # Leave the plot without lines and labels
@@ -186,6 +193,8 @@ def plot_set(z, color, cmap, clean_plot=True, width=GRAPH_WIDTH, ax: plt.Axes=No
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
 
+    mng = plt.get_current_fig_manager()
+    mng.window.state('zoomed')
     plt.show()
 
     return f, ax
@@ -203,9 +212,9 @@ def center_displacement(limits, center, zoom):
 
 
 
-def check_dpi(width, dpi):
+def check_dpi(width, height, dpi):
     value = input(f'\n************************ Fractal generator ************************\
-                  \n\nUsing a dpi of {dpi}, the grid has {width*dpi:.0f}x{width*dpi:.0f} = {(width*dpi)**2} points.\
+                  \n\nUsing a dpi of {dpi}, the grid has {width*dpi:.0f}x{height*dpi:.0f} = {(width*dpi)*(height*dpi)} points.\
                   \nDo you want to continue?\n\n(y/n)\n')
 
     if value == 'y':
