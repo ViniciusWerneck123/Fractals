@@ -90,10 +90,9 @@ def julia(c: complex, forced_stop=False, stop_step=STOP_STEP, cmap=CMAP,
     end_time = time.time()
     evaluate_elapsed_time(start_time, end_time, i)
     
-    # Necessary to correct the orientation of the figure
-    color = color.T
+    color = color_points(color, cmap, converging_color)
 
-    plot_set(color, clean_plot=clean_plot, cmap=cmap)
+    plot_set(color, clean_plot=clean_plot)
 
 
 
@@ -170,23 +169,22 @@ def mandelbrot(forced_stop = False, stop_step=STOP_STEP, cmap=CMAP,
 
     end_time = time.time()
     evaluate_elapsed_time(start_time, end_time, i)
+    
+    color = color_points(color, cmap, converging_color)
 
-    # Necessary to correct the orientation of image
-    color = color.T
-
-    plot_set(color, cmap=cmap, clean_plot=clean_plot)
+    plot_set(color, clean_plot=clean_plot)
        
     
 
 
 
-def plot_set(color, cmap, clean_plot=True):
+def plot_set(color, clean_plot=True):
     f = plt.figure()
     
     # Add axes with the size of the figure
     ax = f.add_axes([0, 0, 1, 1])
 
-    ax.imshow(color, cmap=cmap)
+    ax.imshow(color)
 
     # Leave the plot without lines and labels
     if clean_plot:
@@ -199,6 +197,24 @@ def plot_set(color, cmap, clean_plot=True):
 
     return f, ax
 
+
+
+def color_points(color, cmap, converging_color):
+    cmap = cm.get_cmap(cmap)
+    color = color.T
+    shape = tuple([*color.shape, 4])
+
+    color = color.flatten()
+    converging = color == -1
+    color[converging] = 0
+
+    color = cmap(color/color.max())
+
+    for i in range(3):
+        color[converging, i] = converging_color[i]
+
+    color = color.reshape(shape)
+    return color
 
 
 
@@ -224,6 +240,7 @@ def check_dpi(width, height, dpi):
     else:
         print('Incorrect value!')
         check_dpi(width, dpi)
+
 
 
 def evaluate_elapsed_time(start, end, n_iterations):

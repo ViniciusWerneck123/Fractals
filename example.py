@@ -13,4 +13,4 @@ c = complex(a, b)
 #julia(c, clean_plot=True, zoom=1, center_x=None, center_y=None, dpi=100, converging_color=[1, 1, 1])
 
 
-mandelbrot(clean_plot=True, cmap='binary_r', forced_stop=False, stop_step=50, converging_color=[1, 1, 1], zoom=1, center_x=None, center_y=None, dpi=100)
+mandelbrot(clean_plot=True, cmap='binary_r', forced_stop=True, stop_step=50, converging_color=[1, 1, 1], zoom=1, center_x=None, center_y=None, dpi=100)
