@@ -94,7 +94,7 @@ def julia(c: complex, stop_iteration=None, cmap=CMAP,
     
     color = color_points(color, cmap, converging_color)
 
-    plot_set(color, clean_plot=clean_plot)
+    plot_set(color, clean_plot=clean_plot, dpi=dpi)
 
 
 
@@ -175,17 +175,17 @@ def mandelbrot(stop_iteration=None, cmap=CMAP,
     
     color = color_points(color, cmap, converging_color)
 
-    plot_set(color, clean_plot=clean_plot)
+    plot_set(color, clean_plot=clean_plot, dpi=dpi)
        
 
 
-def plot_set(color, clean_plot=True):
-    f = plt.figure()
+def plot_set(color, clean_plot=True, dpi=100):
+    f = plt.figure(dpi=dpi)
     
     # Add axes with the size of the figure
     ax = f.add_axes([0, 0, 1, 1])
 
-    ax.imshow(color)
+    ax.imshow(color, interpolation='none')
 
     # Leave the plot without lines and labels
     if clean_plot:
