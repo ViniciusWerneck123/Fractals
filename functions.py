@@ -18,7 +18,7 @@ MAXIMUM_ITERATIONS = 500
 
 def julia(c: complex, stop_iteration=None, cmap=CMAP,
             converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
-            zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM):
+            zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM, show=True):
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
     c: the complex constant value of the sequence.                                               
@@ -94,13 +94,16 @@ def julia(c: complex, stop_iteration=None, cmap=CMAP,
     
     color = color_points(color, cmap, converging_color)
 
-    plot_set(color, clean_plot=clean_plot, dpi=dpi)
+    if show:
+        plot_set(color, clean_plot=clean_plot, dpi=dpi)
+
+    return color
 
 
 
 def mandelbrot(stop_iteration=None, cmap=CMAP,
                 converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
-                zoom=1, center_x=None, center_y=None, xlim=MANDELBROT_XLIM):
+                zoom=1, center_x=None, center_y=None, xlim=MANDELBROT_XLIM, show=True):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
 
@@ -175,7 +178,10 @@ def mandelbrot(stop_iteration=None, cmap=CMAP,
     
     color = color_points(color, cmap, converging_color)
 
-    plot_set(color, clean_plot=clean_plot, dpi=dpi)
+    if show:
+        plot_set(color, clean_plot=clean_plot, dpi=dpi)
+
+    return color
        
 
 
@@ -185,7 +191,7 @@ def plot_set(color, clean_plot=True, dpi=100):
     # Add axes with the size of the figure
     ax = f.add_axes([0, 0, 1, 1])
 
-    ax.imshow(color, interpolation='none')
+    ax.imshow(color, interpolation='antialiased', interpolation_stage='rgba')
 
     # Leave the plot without lines and labels
     if clean_plot:
