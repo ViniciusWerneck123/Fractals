@@ -2,6 +2,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.animation as animation
 from itertools import product
 from screeninfo import get_monitors
 
@@ -9,15 +10,99 @@ DEFAULT_XLIM = [-2, 2]
 MANDELBROT_XLIM = [-2.5, 1.5]
 DEFAULT_DPI = 100
 CMAP = 'viridis'
-INTERIOR_COLOR = [0, 0, 0] # [r, g, b]
+CONVERGING_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
 MAXIMUM_ITERATIONS = 500
 
 
+def nxtSequenceValue(func, z):
+    return func(z)
+
+
+
+def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT_DPI, cmap=CMAP, converging_color=CONVERGING_COLOR,
+            clean_plot=True, zoom=1, center_x=None, center_y=None, xlim=None):
+    if fractal_type == "mandelbrot":
+        xlim = MANDELBROT_XLIM
+    elif fractal_type == "julia":
+        xlim = DEFAULT_XLIM
+    else:
+        print("type parameter is incorrect. Should be either 'mandelbrot' or 'julia', review your code")
+        exit(0)
+
+    ### Creating the grid of points
+    # Gets the value of inches of the monitor
+    monitor = get_monitors()[0]
+    width, height = round(monitor.width_mm/25.4, 1), round(monitor.height_mm/25.4, 1)
+
+    aspect_ratio = height/width
+
+    # Ask the user if the size of grid is ok
+    check_dpi(width, height, dpi)
+
+    # Getting the respective ylim using the aspect ratio of the monitor
+    overall_y_height = np.sum(np.abs(np.array(xlim)))*aspect_ratio
+    ylim = [-overall_y_height/2, overall_y_height/2]
+
+    # Values of displacement in x and y of the limits of the axes to ensure the new center is in the middle of figure
+    dx = center_displacement(xlim, center_x, zoom)
+    dy = center_displacement(ylim, center_y, zoom)
+
+    # Grid of points
+    x = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, int(width*dpi), dtype=np.float64)
+    y = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, int(height*dpi), dtype=np.float64)
+    values = product(x, y)
+
+    del x, y
+
+    # Complex grid
+    grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width*dpi), int(height*dpi)))
+    
+    # Color of the converging points
+    color = np.ones(grid_points.shape)*-1
+    i = 1
+
+    if fractal_type == 'mandelbrot':
+        z = c
+        c = grid_points
+    else:
+        z = grid_points
+
+    start_time = time.time()
+
+    while True:
+        z = nxtSequenceValue(lambda x: x**2 + c, z)
+
+        # Update color based on convergence:
+        # if point diverge, the value, color = i -> the number of the iteration it took to diverge
+        diverging = np.absolute(z) > 2
+
+        if type(n_iter) != type(None):
+            if i >= n_iter:
+                break
+        else:
+            # If there is no point diverging, leave the loop
+            if np.all(~diverging) and i > MINIMUM_ITERATIONS:
+                break
+
+        new_point = color == -1
+        sn = 1 - np.log10(np.absolute(z))/np.log10(2)
+        color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
+        z[diverging] = np.nan
+
+        i += 1
+
+    del diverging, new_point
+
+    end_time = time.time()
+    evaluate_elapsed_time(start_time, end_time, i)
+    color_plot = color_points(color, cmap, converging_color)
+    plot_set(color_plot, clean_plot)
+
 
 
 def julia(c: complex, stop_iteration=None, cmap=CMAP,
-            converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
+            converging_color=CONVERGING_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
             zoom=1, center_x=None, center_y=None, xlim=DEFAULT_XLIM, show=True):
     '''Function that return the points and colors for each point for the fractal.
     Return a tuple of matrices with x and y values of the mandelbrot set.\n                                                  
@@ -102,7 +187,7 @@ def julia(c: complex, stop_iteration=None, cmap=CMAP,
 
 
 def mandelbrot(stop_iteration=None, cmap=CMAP,
-                converging_color=INTERIOR_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
+                converging_color=CONVERGING_COLOR, clean_plot=True, dpi=DEFAULT_DPI,
                 zoom=1, center_x=None, center_y=None, xlim=MANDELBROT_XLIM, show=True):
     '''Generate the points and color of the Mandelbrot set                                                      
     Return the values z of the plane and the colors of each point
@@ -185,13 +270,13 @@ def mandelbrot(stop_iteration=None, cmap=CMAP,
        
 
 
-def plot_set(color, clean_plot=True, dpi=100):
-    f = plt.figure(dpi=dpi)
+def plot_set(color, clean_plot=True):
+    f = plt.figure()
     
     # Add axes with the size of the figure
     ax = f.add_axes([0, 0, 1, 1])
 
-    ax.imshow(color, interpolation='antialiased', interpolation_stage='rgba')
+    ax.imshow(color, interpolation='antialiased', interpolation_stage='rgba', origin='lower')
 
     # Leave the plot without lines and labels
     if clean_plot:
