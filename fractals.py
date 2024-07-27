@@ -7,7 +7,7 @@ from itertools import product
 from screeninfo import get_monitors
 
 DEFAULT_XLIM = [-2, 2]
-MANDELBROT_XLIM = [-2.5, 1.5]
+MANDELBROT_XLIM = [-2.55, 1.55]
 DEFAULT_DPI = 100
 CMAP = 'viridis'
 CONVERGING_COLOR = [0, 0, 0] # [r, g, b]
