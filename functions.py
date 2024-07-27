@@ -82,6 +82,7 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
     start_time = time.time()
 
     def update(n_iter, z, c, color):
+        '''The loop that calculates the sequence'''
         i = 1
         while True:
             z = nxtSequenceValue(lambda x: x**2 + c, z)
