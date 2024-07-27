@@ -18,48 +18,66 @@ Julia set for c = 0.285 - 0.01i
 ![juliaset_2](https://github.com/user-attachments/assets/2c68e7ae-0265-4da3-8d7e-006ff189c9ba)
 
 Animated version
-`fractal(n_iter=100, fractal_type='julia', c=complex(0.285, -0.01), animated=True)`
-`#Output`
-`************************ Fractal generator ************************`
+```
+fractal(n_iter=100, fractal_type='julia', c=complex(0.285, -0.01), animated=True)
+```
+```
+#Output
+************************ Fractal generator ************************
 
-`Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.`
-`Do you want to continue?`
+Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.
+Do you want to continue?
 
-`(y/n)`
-`y`
+(y/n)
+y
 
-`Elapsed time: 227.13 s`
-`*******************************************************************`
+Elapsed time: 227.13 s
+*******************************************************************
+```
+
+![julia_anim](https://github.com/user-attachments/assets/8b13d854-a01f-40a8-8cec-dbfcec4b8c78)
 
 
 Plotting the Mandelbrot set:
 
-`fractal(fractal_type='mandelbrot', cmap='binary_r', dpi=100)`
-`#Output`
-`************************ Fractal generator ************************`
+```
+fractal(fractal_type='mandelbrot', cmap='binary_r', dpi=100)
+```
+```
+#Output
+************************ Fractal generator ************************
 
-`Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.`
-`Do you want to continue?`
+Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.
+Do you want to continue?
 
-`(y/n)`
-`y`
+(y/n)
+y
 
-`Elapsed time: 15.31 s`
-`*******************************************************************`
+Elapsed time: 15.31 s
+*******************************************************************
+```
 
 ![mandelbrot](https://github.com/user-attachments/assets/c34ced51-6260-4227-8f32-ad2de2587ef9)
 
 Animated version:
 
-`#Output`
-`************************ Fractal generator ************************`
+```
+fractal(n_iter=50, fractal_type='mandelbrot', cmap='binary', animated=True)
+```
+```
+#Output
+************************ Fractal generator ************************
 
-`Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.`
-`Do you want to continue?`
+Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.
+Do you want to continue?
 
-`(y/n)`
-`y`
+(y/n)
+y
 
-`Elapsed time: 61.39 s`
-`*******************************************************************`
+Elapsed time: 61.39 s
+*******************************************************************
+```
+
+![mandelbrot_anim](https://github.com/user-attachments/assets/162903be-0627-44f6-8b14-a88ecdb5ea1f)
+
 
