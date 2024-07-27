@@ -21,7 +21,7 @@ def nxtSequenceValue(func, z):
 
 
 def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT_DPI, cmap=CMAP, converging_color=CONVERGING_COLOR,
-            clean_plot=True, zoom=1, center_x=None, center_y=None, xlim=None, animated=False):
+            clean_plot=True, zoom=1, center_x=None, center_y=None, xlim=None, animated=False, filename='fractal.gif'):
     if fractal_type == "mandelbrot":
         xlim = MANDELBROT_XLIM
     elif fractal_type == "julia":
@@ -71,8 +71,13 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
     fig = plt.figure()
     # Add axes that occupies all the figure area
     ax = fig.add_axes([0, 0, 1, 1])
+    # Leave the plot without lines and labels
+    if clean_plot:
+        ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
+        ax.axis('off')
+
     # Creation of img Artist, needs to use the transpose of color grid
-    img = ax.imshow((color + 1).T, cmap=cmap)
+    img = ax.imshow(color_points(color, cmap, converging_color))
 
     start_time = time.time()
 
@@ -107,18 +112,16 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
 
     if not animated:
         update(n_iter, z, c, color)
-    else:
-        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=30, cache_frame_data=False)
-    
-    # Leave the plot without lines and labels
-    if clean_plot:
-        ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
-        ax.axis('off')
-    # Make figure occupy the whole screen
-    mng = plt.get_current_fig_manager()
-    mng.window.state('zoomed')
+        # Make figure occupy the whole screen
+        mng = plt.get_current_fig_manager()
+        mng.window.state('zoomed')
 
-    plt.show()
+        plt.show()
+    else:
+        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=100,
+                                       cache_frame_data=False)
+        anim.save('fractal.gif', writer='pillow')
+    
 
     end_time = time.time()
     evaluate_elapsed_time(start_time, end_time)
@@ -142,7 +145,10 @@ def color_points(color, cmap, converging_color):
     # because the values should be between 0 and 1
     color[converging] = 0
 
-    color = cmap(color/color.max())
+    if color.max() == 0:
+        color = cmap(color)
+    else:
+        color = cmap(color/color.max())
 
     # Change the color of converging points to the specified color
     for i in range(3):
