@@ -20,8 +20,46 @@ def nxtSequenceValue(func, z):
 
 
 
-def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT_DPI, cmap=CMAP, converging_color=CONVERGING_COLOR,
-            clean_plot=True, zoom=1, center_x=None, center_y=None, xlim=None, animated=False, filename='fractal.gif'):
+def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), dpi: int=DEFAULT_DPI, cmap: str=CMAP,
+            converging_color: list=CONVERGING_COLOR, clean_plot: bool=True, zoom: int=1, center_x: float=None, center_y: float=None,
+            xlim: list=None, animated: bool=False, filename: str='fractal.gif', frame_interval: int=100) -> None:
+    '''Creates an image or animation of a specified fractal.                                    
+
+    Parameters
+    ----------
+    n_iter: int, None
+        number of iterations to generate the fractal. If ``n_iter`` is not given, then the fractal will exit when there is no
+        more points diverging in one iteration. For some fractals, the iteration where this happens could be high, up to 500 iterations.                                                             
+    fractal_type: {'julia', 'mandelbrot'} 
+        the type of the fractal. Default is `'mandelbrot'`.                                   
+    c: complex
+        the constant `c` in the sequence. If `fractal_type='mandelbrot'`, this should not be used.                                               
+    dpi: int
+        dots per inches, number used for calculation of grid size. Default is 100.                                                     
+    cmap: str
+        matplotlib color map used to color the fractal. Default to `'viridis'`.                                                         
+    converging_color: list([red, green, blue])
+        the color of points that do not diverge until the last iteration. The values of each color are a float between 0 and 1.
+        Default to [0, 0, 0] -> black
+    clean_plot: bool
+        If `clean_plot` is `True`, the plot will appears without labels and ticks. If `False`, they will appear in the image.
+    zoom: int
+        The zoom value of the fractal.
+    center_x: float, None
+        The x center value of the image. Default to `None`
+    center_y: float, None
+        The y center value of the image. Default to `None`
+    xlim: list([xmin, xmax])
+        The x limits of the image. If `fractal_type = 'julia'`, default to `[-2, 2]` and if `fractal_type = 'mandelbrot'`, default to `[-2.55, 1.55]`.
+    animated: bool
+        Controls the kind of output. If `True`, the program will generate a file with the name given by `filename` that is an animated
+        version of the fractal. If `False`, then the program will show the image after running as an image that can be saved using
+        matplotlib controls. Default to `False`.
+    filename: str
+        The name and type of the animation that will be created. Default to `'fractal.gif'`.
+    frame_interval: int
+        The interval between frames as miliseconds. Default to 100'''
+    
     if fractal_type == "mandelbrot":
         xlim = MANDELBROT_XLIM
     elif fractal_type == "julia":
@@ -119,7 +157,7 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
 
         plt.show()
     else:
-        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=100,
+        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
         anim.save(filename, writer='pillow')
     
