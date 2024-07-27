@@ -120,7 +120,7 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=100,
                                        cache_frame_data=False)
-        anim.save('fractal.gif', writer='pillow')
+        anim.save(filename, writer='pillow')
     
 
     end_time = time.time()
