@@ -6,6 +6,8 @@ Requirements:
 ```
 matplotlib
 numpy
+itertools
+time
 screeninfo
 ```
 
