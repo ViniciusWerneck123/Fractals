@@ -21,7 +21,7 @@ def nxtSequenceValue(func, z):
 
 
 def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT_DPI, cmap=CMAP, converging_color=CONVERGING_COLOR,
-            clean_plot=True, zoom=1, center_x=None, center_y=None, xlim=None):
+            clean_plot=True, zoom=1, center_x=None, center_y=None, xlim=None, animated=False):
     if fractal_type == "mandelbrot":
         xlim = MANDELBROT_XLIM
     elif fractal_type == "julia":
@@ -60,7 +60,6 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
     
     # Color of the converging points
     color = np.ones(grid_points.shape)*-1
-    i = 1
 
     if fractal_type == 'mandelbrot':
         z = c
@@ -68,59 +67,61 @@ def fractal(n_iter=None, fractal_type="mandelbrot", c=complex(0, 0), dpi=DEFAULT
     else:
         z = grid_points
 
+    # Creating the figure
+    fig = plt.figure()
+    # Add axes that occupies all the figure area
+    ax = fig.add_axes([0, 0, 1, 1])
+    # Creation of img Artist, needs to use the transpose of color grid
+    img = ax.imshow((color + 1).T, cmap=cmap)
+
     start_time = time.time()
 
-    while True:
-        z = nxtSequenceValue(lambda x: x**2 + c, z)
+    def update(n_iter, z, c, color):
+        i = 1
+        while True:
+            z = nxtSequenceValue(lambda x: x**2 + c, z)
 
-        # Update color based on convergence:
-        # if point diverge, the value, color = i -> the number of the iteration it took to diverge
-        diverging = np.absolute(z) > 2
+            # Update color based on convergence:
+            # if point diverge, the value, color = i -> the number of the iteration it took to diverge
+            diverging = np.absolute(z) > 2
 
-        if type(n_iter) != type(None):
-            if i >= n_iter:
-                break
-        else:
-            # If there is no point diverging, leave the loop
-            if np.all(~diverging) and i > MINIMUM_ITERATIONS:
-                break
+            if type(n_iter) != type(None):
+                if i >= n_iter:
+                    break
+            else:
+                # If there is no point diverging, leave the loop
+                if np.all(~diverging) and i > MINIMUM_ITERATIONS:
+                    break
 
-        new_point = color == -1
-        sn = 1 - np.log10(np.absolute(z))/np.log10(2)
-        color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
-        z[diverging] = np.nan
+            new_point = color == -1
+            sn = 1 - np.log10(np.absolute(z))/np.log10(2)
+            color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
+            z[diverging] = np.nan
 
-        i += 1
+            i += 1
+        
+        color = color_points(color, cmap=cmap, converging_color=converging_color)
+        img.set_data(color)
 
-    del diverging, new_point
+        return (img, )
 
-    end_time = time.time()
-    evaluate_elapsed_time(start_time, end_time, i)
-    color_plot = color_points(color, cmap, converging_color)
-    plot_set(color_plot, clean_plot)
-
-
-
-def plot_set(color, clean_plot=True):
-    f = plt.figure()
+    if not animated:
+        update(n_iter, z, c, color)
+    else:
+        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=30, cache_frame_data=False)
     
-    # Add axes with the size of the figure
-    ax = f.add_axes([0, 0, 1, 1])
-
-    ax.imshow(color, interpolation='antialiased', interpolation_stage='rgba', origin='lower')
-
     # Leave the plot without lines and labels
     if clean_plot:
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
-
     # Make figure occupy the whole screen
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
 
     plt.show()
 
-    return f, ax
+    end_time = time.time()
+    evaluate_elapsed_time(start_time, end_time)
 
 
 
@@ -178,8 +179,7 @@ def check_dpi(width, height, dpi):
 
 
 
-def evaluate_elapsed_time(start, end, n_iterations):
+def evaluate_elapsed_time(start, end):
     elapsed_time = end - start
     print(f'\nElapsed time: {elapsed_time:.2f} s\
-          \nNumber of iterations: {n_iterations}\
           \n*******************************************************************')
