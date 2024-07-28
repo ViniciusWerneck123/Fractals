@@ -60,7 +60,12 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         The name and type of the animation that will be created. Default to `'fractal.gif'`.
     frame_interval: int
         The interval between frames in miliseconds. Default to 100'''
-    
+    # If animated = True, the number of frames (n_iter) must be different of None
+    if animated and type(n_iter) == type(None):
+        print('\nParameter error:')
+        print('When \'animated\' = True, the parameter \'n_iter\' must be given to avoid a heavy gif with too many frames.\n')
+        return None
+
     if fractal_type == "mandelbrot":
         xlim = MANDELBROT_XLIM
     elif fractal_type == "julia":
