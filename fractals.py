@@ -53,12 +53,13 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         The x limits of the image. If `fractal_type = 'julia'`, default to `[-2, 2]` and if `fractal_type = 'mandelbrot'`, default to `[-2.55, 1.55]`.
     animated: bool
         Controls the kind of output. If `True`, the program will generate a file with the name given by `filename` that is an animated
-        version of the fractal. If `False`, then the program will show the image after running as an image that can be saved using
+        version of the fractal with a number of frames equal to n_iter. If n_iter = None, then the program will raise and error. 
+        If `False`, then the program will show the image after running as an image that can be saved using
         matplotlib controls. Default to `False`.
     filename: str
         The name and type of the animation that will be created. Default to `'fractal.gif'`.
     frame_interval: int
-        The interval between frames as miliseconds. Default to 100'''
+        The interval between frames in miliseconds. Default to 100'''
     
     if fractal_type == "mandelbrot":
         xlim = MANDELBROT_XLIM
