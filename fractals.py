@@ -9,6 +9,7 @@ from screeninfo import get_monitors
 DEFAULT_XLIM = [-2, 2]
 MANDELBROT_XLIM = [-2.55, 1.55]
 DEFAULT_DPI = 100
+FILE_DPI = 300
 CMAP = 'viridis'
 CONVERGING_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
@@ -182,7 +183,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
-        anim.save(filename + '.' + file_type, writer='pillow', dpi=300)
+        anim.save(filename + '.' + file_type, writer='pillow', dpi=FILE_DPI)
         # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
         # is not n_iter but n_iter - 1. This is to ensure i = the number of iterations.
         i += 1
