@@ -169,6 +169,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         anim.save(filename, writer='pillow')
         # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
         # is not n_iter but n_iter - 1. This is to i = the number of iterations.
+        global i
         i += 1
     
 
