@@ -118,7 +118,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         z = grid_points
 
     # Creating the figure and adding an axes that ocuppies the whole figure area
-    fig = plt.figure()
+    fig = plt.figure(figsize=(width, height))
     ax = fig.add_axes([0, 0, 1, 1])
 
     # Leaves the plot without lines and labels
@@ -175,10 +175,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
     if not animated:
         update(n_iter)
-        # Make figure occupy the whole screen
-        mng = plt.get_current_fig_manager()
-        mng.window.state('zoomed')
-
+        plt.savefig(filename)
         plt.show()
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
