@@ -22,7 +22,7 @@ def nxtSequenceValue(func, z):
 
 def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), dpi: int=DEFAULT_DPI, cmap: str=CMAP,
             converging_color: list=CONVERGING_COLOR, clean_plot: bool=True, zoom: int=1, center_x: float=None, center_y: float=None,
-            xlim: list=None, animated: bool=False, filename: str='fractal.gif', frame_interval: int=100) -> None:
+            xlim: list=None, animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
     '''Creates an image or animation of a specified fractal.                                    
 
     Parameters
@@ -57,7 +57,9 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         If `False`, then the program will show the image after running as an image that can be saved using
         matplotlib controls. Default to `False`.
     filename: str
-        The name and type of the animation that will be created. Default to `'fractal.gif'`.
+        The name and type of the animation that will be created. Default to `'fractal'`.
+    file_type: str
+        The file extension that the animated file will have. Default to `'gif'`.
     frame_interval: int
         The interval between frames in miliseconds. Default to 100'''
     # If animated = True, the number of frames (n_iter) must be different of None
@@ -180,7 +182,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
-        anim.save(filename, writer='pillow', dpi=dpi)
+        anim.save(filename + '.' + file_type, writer='pillow', dpi=300)
         # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
         # is not n_iter but n_iter - 1. This is to ensure i = the number of iterations.
         i += 1
