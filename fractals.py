@@ -235,7 +235,7 @@ def center_displacement(limits, center, zoom):
 
 def check_dpi(width, height, dpi):
     value = input(f'\n************************ Fractal generator ************************\
-                  \n\nUsing a dpi of {dpi}, the grid has {width*dpi:.0f}x{height*dpi:.0f} = {(width*dpi)*(height*dpi)} points.\
+                  \n\nUsing a dpi of {dpi}, the grid has {width*dpi:.0f}x{height*dpi:.0f} = {(width*dpi)*(height*dpi):.0f} points.\
                   \nDo you want to continue?\n\n(y/n)\n')
 
     if value == 'y':
