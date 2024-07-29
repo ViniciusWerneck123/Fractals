@@ -114,11 +114,11 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     else:
         z = grid_points
 
-    # Creating the figure
+    # Creating the figure and adding an axes that ocuppies the whole figure area
     fig = plt.figure()
-    # Add axes that occupies all the figure area
     ax = fig.add_axes([0, 0, 1, 1])
-    # Leave the plot without lines and labels
+
+    # Leaves the plot without lines and labels
     if clean_plot:
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
@@ -127,8 +127,10 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     img = ax.imshow(color_points(color, cmap, converging_color))
 
     start_time = time.time()
+
     global i
     i = 1
+
     def update(n_iter):
         '''The loop that calculates the sequence'''
         global i
@@ -152,7 +154,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
             # color = i + sn
             diverging = np.absolute(z) > 2
             new_point = color == -1
-            
+
             sn = 1 - np.log10(np.absolute(z))/np.log10(2)
             color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
             z[diverging] = np.nan
@@ -163,6 +165,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         img.set_data(color_img)
 
         return (img, )
+
 
     if not animated:
         update(n_iter)
@@ -176,7 +179,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
                                        cache_frame_data=False)
         anim.save(filename, writer='pillow')
         # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
-        # is not n_iter but n_iter - 1. This is to i = the number of iterations.
+        # is not n_iter but n_iter - 1. This is to ensure i = the number of iterations.
         i += 1
     
 
