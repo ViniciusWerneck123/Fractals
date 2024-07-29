@@ -142,8 +142,11 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
                     break
             else:
                 # If there is no point diverging and the iteration is higher than the minimum, leave the loop
-                if np.all(~diverging) and i > MINIMUM_ITERATIONS:
-                    break
+                if i > MINIMUM_ITERATIONS:
+                    if np.all(~diverging):
+                        break
+                else:
+                    pass
 
             z = nxtSequenceValue(lambda x: x**2 + c, z)
 
