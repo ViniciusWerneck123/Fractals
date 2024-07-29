@@ -1,6 +1,6 @@
 # Fractals
 Fractals is a program to create images of fractals. Until this stage, the ones available are the julia and mandelbrot fractals.
-There is a parameter available to create animations but is too slow at this stage of development and one should use a number of iterations below 100 (this number already takes up to 2 min or more depending on which fractal).
+There is a parameter available to create animated fractals like ones given below.
 
 Requirements:
 ```
@@ -44,7 +44,8 @@ Do you want to continue?
 (y/n)
 y
 
-Elapsed time: 227.13 s
+Number of iterations: 100
+Elapsed time: 00:21 min
 *******************************************************************
 ```
 
@@ -66,7 +67,8 @@ Do you want to continue?
 (y/n)
 y
 
-Elapsed time: 15.31 s
+Number of iterations: 328
+Elapsed time: 00:16 min
 *******************************************************************
 ```
 
@@ -87,7 +89,8 @@ Do you want to continue?
 (y/n)
 y
 
-Elapsed time: 61.39 s
+Number of iterations: 50
+Elapsed time: 00:10 min
 *******************************************************************
 ```
 
