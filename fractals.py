@@ -180,7 +180,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
-        anim.save(filename, writer='pillow')
+        anim.save(filename, writer='pillow', dpi=dpi)
         # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
         # is not n_iter but n_iter - 1. This is to ensure i = the number of iterations.
         i += 1
