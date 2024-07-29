@@ -146,7 +146,10 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
             z = nxtSequenceValue(lambda x: x**2 + c, z)
 
             # Update color based on convergence:
-            # if point diverge, the value, color = i -> the number of the iteration it took to diverge
+            # if point diverges, the color of those points will be defined as:
+            # i = number of the iteration where the point diverges
+            # sn = fraction part defined as sn = 1 - log(|z|/log(2)) thus, it depends on the magnitude of the point
+            # color = i + sn
             diverging = np.absolute(z) > 2
 
             new_point = color == -1
