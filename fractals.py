@@ -127,6 +127,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
     def update(n_iter, z, c, color):
         '''The loop that calculates the sequence'''
+        global i
         i = 1
         while True:
             z = nxtSequenceValue(lambda x: x**2 + c, z)
@@ -169,7 +170,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     
 
     end_time = time.time()
-    evaluate_elapsed_time(start_time, end_time)
+    evaluate_elapsed_time(start_time, end_time, i)
 
 
 
@@ -230,7 +231,8 @@ def check_dpi(width, height, dpi):
 
 
 
-def evaluate_elapsed_time(start, end):
+def evaluate_elapsed_time(start, end, n_iter):
     elapsed_time = end - start
-    print(f'\nElapsed time: {elapsed_time:.2f} s\
+    print(f'\nNumber of iterations: {n_iter:.0f}\
+          \nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} min\
           \n*******************************************************************')
