@@ -102,6 +102,9 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     # Complex grid
     grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width*dpi), int(height*dpi)))
     
+    # z and color needs to be global in order to the inner function 'update()' below can access them
+    global z, color
+
     # Color of the converging points
     color = np.ones(grid_points.shape)*-1
 
@@ -124,25 +127,27 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     img = ax.imshow(color_points(color, cmap, converging_color))
 
     start_time = time.time()
-
-    def update(n_iter, z, c, color):
+    global i
+    i = 1
+    def update(n_iter):
         '''The loop that calculates the sequence'''
         global i
-        i = 1
+        global z, color
         while True:
+            # Checks the break condition
+            if type(n_iter) != type(None):
+                if i >= n_iter:
+                    break
+            else:
+                # If there is no point diverging and the iteration is higher than the minimum, leave the loop
+                if np.all(~diverging) and i > MINIMUM_ITERATIONS:
+                    break
+
             z = nxtSequenceValue(lambda x: x**2 + c, z)
 
             # Update color based on convergence:
             # if point diverge, the value, color = i -> the number of the iteration it took to diverge
             diverging = np.absolute(z) > 2
-
-            if type(n_iter) != type(None):
-                if i >= n_iter:
-                    break
-            else:
-                # If there is no point diverging, leave the loop
-                if np.all(~diverging) and i > MINIMUM_ITERATIONS:
-                    break
 
             new_point = color == -1
             sn = 1 - np.log10(np.absolute(z))/np.log10(2)
@@ -151,25 +156,24 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
             i += 1
         
-        color = color_points(color, cmap=cmap, converging_color=converging_color)
-        img.set_data(color)
+        color_img = color_points(color, cmap=cmap, converging_color=converging_color)
+        img.set_data(color_img)
 
         return (img, )
 
     if not animated:
-        update(n_iter, z, c, color)
+        update(n_iter)
         # Make figure occupy the whole screen
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
 
         plt.show()
     else:
-        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=frame_interval,
+        anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
         anim.save(filename, writer='pillow')
         # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
         # is not n_iter but n_iter - 1. This is to i = the number of iterations.
-        global i
         i += 1
     
 
