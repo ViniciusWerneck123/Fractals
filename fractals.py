@@ -102,6 +102,9 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     # Complex grid
     grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width*dpi), int(height*dpi)))
     
+    # z and color needs to be global in order to the inner function 'update()' below can access them
+    global z, color
+
     # Color of the converging points
     color = np.ones(grid_points.shape)*-1
 
@@ -111,11 +114,11 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     else:
         z = grid_points
 
-    # Creating the figure
+    # Creating the figure and adding an axes that ocuppies the whole figure area
     fig = plt.figure()
-    # Add axes that occupies all the figure area
     ax = fig.add_axes([0, 0, 1, 1])
-    # Leave the plot without lines and labels
+
+    # Leaves the plot without lines and labels
     if clean_plot:
         ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
         ax.axis('off')
@@ -125,51 +128,66 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
     start_time = time.time()
 
-    def update(n_iter, z, c, color):
+    global i
+    i = 1
+
+    def update(n_iter):
         '''The loop that calculates the sequence'''
-        i = 1
+        global i
+        global z, color
         while True:
-            z = nxtSequenceValue(lambda x: x**2 + c, z)
-
-            # Update color based on convergence:
-            # if point diverge, the value, color = i -> the number of the iteration it took to diverge
-            diverging = np.absolute(z) > 2
-
+            # Checks the break condition
             if type(n_iter) != type(None):
                 if i >= n_iter:
                     break
             else:
-                # If there is no point diverging, leave the loop
-                if np.all(~diverging) and i > MINIMUM_ITERATIONS:
-                    break
+                # If there is no point diverging and the iteration is higher than the minimum, leave the loop
+                if i > MINIMUM_ITERATIONS:
+                    if np.all(~diverging):
+                        break
+                else:
+                    pass
 
+            z = nxtSequenceValue(lambda x: x**2 + c, z)
+
+            # Update color based on convergence:
+            # if point diverges, the color of those points will be defined as:
+            # i = number of the iteration where the point diverges
+            # sn = fraction part defined as sn = 1 - log(|z|/log(2)) thus, it depends on the magnitude of the point
+            # color = i + sn
+            diverging = np.absolute(z) > 2
             new_point = color == -1
+
             sn = 1 - np.log10(np.absolute(z))/np.log10(2)
             color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
             z[diverging] = np.nan
 
             i += 1
         
-        color = color_points(color, cmap=cmap, converging_color=converging_color)
-        img.set_data(color)
+        color_img = color_points(color, cmap=cmap, converging_color=converging_color)
+        img.set_data(color_img)
 
         return (img, )
 
+
     if not animated:
-        update(n_iter, z, c, color)
+        update(n_iter)
         # Make figure occupy the whole screen
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
 
         plt.show()
     else:
-        anim = animation.FuncAnimation(fig=fig, func=update, fargs=(z, c, color), frames=n_iter, repeat=False, interval=frame_interval,
+        anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
         anim.save(filename, writer='pillow')
+        # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
+        # is not n_iter but n_iter - 1. This is to ensure i = the number of iterations.
+        i += 1
     
 
     end_time = time.time()
-    evaluate_elapsed_time(start_time, end_time)
+    evaluate_elapsed_time(start_time, end_time, i)
 
 
 
@@ -230,7 +248,8 @@ def check_dpi(width, height, dpi):
 
 
 
-def evaluate_elapsed_time(start, end):
+def evaluate_elapsed_time(start, end, n_iter):
     elapsed_time = end - start
-    print(f'\nElapsed time: {elapsed_time:.2f} s\
+    print(f'\nNumber of iterations: {n_iter:.0f}\
+          \nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} min\
           \n*******************************************************************')
