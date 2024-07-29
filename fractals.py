@@ -151,8 +151,8 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
             # sn = fraction part defined as sn = 1 - log(|z|/log(2)) thus, it depends on the magnitude of the point
             # color = i + sn
             diverging = np.absolute(z) > 2
-
             new_point = color == -1
+            
             sn = 1 - np.log10(np.absolute(z))/np.log10(2)
             color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
             z[diverging] = np.nan
