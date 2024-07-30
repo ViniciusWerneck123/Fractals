@@ -19,8 +19,8 @@ def nxtSequenceValue(func, z):
 
 
 
-def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, cmap: str=CMAP,
-            converging_color: list=CONVERGING_COLOR, clean_plot: bool=True, zoom: int=1, center_x: float=None, center_y: float=None,
+def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, sampling: int=4,
+            cmap: str=CMAP, converging_color: list=CONVERGING_COLOR, clean_plot: bool=True, zoom: int=1, center_x: float=None, center_y: float=None,
             xlim: list=None, animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
     '''Creates an image or animation of a specified fractal.                                    
 
@@ -36,7 +36,9 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     size: str
         The size of the respective image/animation in pixels. Default to `'1600x900`'.                                               
     dpi: int
-        dots per inches. Default is 100.                                                     
+        dots per inches. Default is 100.   
+    sampling: int
+        The sampling rate of points per pixel, Default to 4.                                                
     cmap: str
         matplotlib color map used to color the fractal. Default to `'viridis'`.                                                         
     converging_color: list([red, green, blue])
@@ -91,15 +93,18 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     dx = center_displacement(xlim, center_x, zoom)
     dy = center_displacement(ylim, center_y, zoom)
 
+    n_x = int(width*sampling/2)
+    n_y = int(height*sampling/2)
+
     # Grid of points
-    x = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, int(width), dtype=np.float64)
-    y = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, int(height), dtype=np.float64)
+    x = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, n_x, dtype=np.float64)
+    y = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, n_y, dtype=np.float64)
     values = product(x, y)
 
     del x, y
 
     # Complex grid
-    grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width), int(height)))
+    grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((n_x, n_y))
     
     # z and color needs to be global in order to the inner function 'update()' below can access them
     global z, color
@@ -123,8 +128,8 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         ax.axis('off')
 
     # Creation of img Artist, needs to use the transpose of color grid
-    img = ax.imshow(color_points(color, cmap, converging_color))
-
+    img = ax.imshow(color_points(color, cmap, converging_color), interpolation='bicubic')
+    
     print('\n************************ Fractal generator ************************\
           \nGenerating fractal...')
     start_time = time.time()
