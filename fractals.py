@@ -21,7 +21,7 @@ def nxtSequenceValue(func, z):
 
 def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, sampling: int=4,
             cmap: str=CMAP, converging_color: list=CONVERGING_COLOR, zoom: int=1, center_x: float=None, center_y: float=None,
-            xlim: list=None, animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
+            animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
     '''Creates an image or animation of a specified fractal.                                    
 
     Parameters
@@ -50,8 +50,6 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         The x center value of the image. Default to `None`
     center_y: float, None
         The y center value of the image. Default to `None`
-    xlim: list([xmin, xmax])
-        The x limits of the image. If `fractal_type = 'julia'`, default to `[-2, 2]` and if `fractal_type = 'mandelbrot'`, default to `[-2.55, 1.55]`.
     animated: bool
         Controls the kind of output. If `True`, the program will generate a file with the name given by `filename` that is an animated
         version of the fractal with a number of frames equal to n_iter. If n_iter = None, then the program will raise and error. 
@@ -74,7 +72,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     elif fractal_type == "julia":
         xlim = DEFAULT_XLIM
     else:
-        print("type parameter is incorrect. Should be either 'mandelbrot' or 'julia', review your code")
+        print("The 'type' parameter is incorrect. Should be either 'mandelbrot' or 'julia', review your code")
         exit(0)
 
     ### Creating the grid of points
