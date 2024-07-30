@@ -172,13 +172,12 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
 
     if not animated:
-        update(n_iter)
+        img = update(n_iter)[0]
         plt.savefig(filename + '.png', dpi=dpi)
 
         end_time = time.time()
         evaluate_elapsed_time(start_time, end_time, i)
 
-        plt.show()
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
                                        cache_frame_data=False)
