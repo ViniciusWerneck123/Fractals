@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.animation as animation
 from itertools import product
-from screeninfo import get_monitors
 
 DEFAULT_XLIM = [-2, 2]
 MANDELBROT_XLIM = [-2.55, 1.55]
