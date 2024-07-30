@@ -25,7 +25,7 @@ fractal(fractal_type='julia', c=complex(-0.64, 0), size='800x450')
 fractal(fractal_type='julia', c=complex(0.285, -0.01), size='800x450')
 ```
 
-![c=0 285 _0 01i](https://github.com/user-attachments/assets/bc6d865e-8569-47eb-90e8-6d6f2ec04dee)
+![Fig1](https://github.com/user-attachments/assets/d0c1899d-4938-4525-9ffb-63d824ebfbff)
 
 
 ## Animated version
@@ -38,11 +38,11 @@ fractal(n_iter=100, fractal_type='julia', c=complex(0.285, -0.01), size='800x450
 Generating fractal...
 
 Number of iterations: 100
-Elapsed time: 00:10 s
+Elapsed time: 01:35 s
 *******************************************************************
 ```
 
-![julia1](https://github.com/user-attachments/assets/7e8714fc-eeb7-473a-8f34-f88373b59838)
+![Anim1](https://github.com/user-attachments/assets/a0a55af1-b26e-46dc-84f7-5dcb5e4e8b63)
 
 
 ## Plotting the Mandelbrot set:
