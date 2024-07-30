@@ -6,8 +6,6 @@ Requirements:
 ```
 matplotlib
 numpy
-itertools
-time
 ```
 
 Here are some examples:
