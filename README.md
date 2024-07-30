@@ -39,7 +39,7 @@ fractal(n_iter=100, fractal_type='julia', c=complex(0.285, -0.01), size='800x450
 Generating fractal...
 
 Number of iterations: 100
-Elapsed time: 00:10 min
+Elapsed time: 00:10 s
 *******************************************************************
 ```
 
@@ -57,7 +57,7 @@ fractal(fractal_type='mandelbrot', cmap='binary_r', size='800x450', converging_c
 Generating fractal...
 
 Number of iterations: 130
-Elapsed time: 00:05 min
+Elapsed time: 00:05 s
 *******************************************************************
 ```
 
@@ -74,7 +74,7 @@ fractal(n_iter=50, fractal_type='mandelbrot', cmap='binary', animated=True)
 Generating fractal...
 
 Number of iterations: 50
-Elapsed time: 00:13 min
+Elapsed time: 00:13 s
 *******************************************************************
 ```
 

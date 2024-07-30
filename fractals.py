@@ -234,5 +234,5 @@ def center_displacement(limits, center, zoom):
 def evaluate_elapsed_time(start, end, n_iter):
     elapsed_time = end - start
     print(f'\nNumber of iterations: {n_iter:.0f}\
-          \nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} min\
+          \nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} s\
           \n*******************************************************************')
