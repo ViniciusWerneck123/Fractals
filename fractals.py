@@ -21,7 +21,7 @@ def nxtSequenceValue(func, z):
 
 
 
-def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), dpi: int=DEFAULT_DPI, cmap: str=CMAP,
+def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, cmap: str=CMAP,
             converging_color: list=CONVERGING_COLOR, clean_plot: bool=True, zoom: int=1, center_x: float=None, center_y: float=None,
             xlim: list=None, animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
     '''Creates an image or animation of a specified fractal.                                    
@@ -34,9 +34,11 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     fractal_type: {'julia', 'mandelbrot'} 
         the type of the fractal. Default is `'mandelbrot'`.                                   
     c: complex
-        the constant `c` in the sequence. If `fractal_type='mandelbrot'`, this should not be used.                                               
+        the constant `c` in the sequence. If `fractal_type='mandelbrot'`, this should not be used.
+    size: str
+        The size of the respective image/animation in pixels. Default to `'1600x900`'.                                               
     dpi: int
-        dots per inches, number used for calculation of grid size. Default is 100.                                                     
+        dots per inches. Default is 100.                                                     
     cmap: str
         matplotlib color map used to color the fractal. Default to `'viridis'`.                                                         
     converging_color: list([red, green, blue])
@@ -78,14 +80,10 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         exit(0)
 
     ### Creating the grid of points
-    # Gets the value of inches of the monitor
-    monitor = get_monitors()[0]
-    width, height = round(monitor.width_mm/25.4, 1), round(monitor.height_mm/25.4, 1)
+    size = size.split('x')
+    width, height = int(size[0]), int(size[1])
 
     aspect_ratio = height/width
-
-    # Ask the user if the size of grid is ok
-    check_dpi(width, height, dpi)
 
     # Getting the respective ylim using the aspect ratio of the monitor
     overall_y_height = np.sum(np.abs(np.array(xlim)))*aspect_ratio
@@ -96,14 +94,14 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     dy = center_displacement(ylim, center_y, zoom)
 
     # Grid of points
-    x = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, int(width*dpi), dtype=np.float64)
-    y = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, int(height*dpi), dtype=np.float64)
+    x = np.linspace(xlim[0]/zoom + dx, xlim[1]/zoom + dx, int(width), dtype=np.float64)
+    y = np.linspace(ylim[0]/zoom + dy, ylim[1]/zoom + dy, int(height), dtype=np.float64)
     values = product(x, y)
 
     del x, y
 
     # Complex grid
-    grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width*dpi), int(height*dpi)))
+    grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((int(width), int(height)))
     
     # z and color needs to be global in order to the inner function 'update()' below can access them
     global z, color
@@ -118,7 +116,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
         z = grid_points
 
     # Creating the figure and adding an axes that ocuppies the whole figure area
-    fig = plt.figure(figsize=(width, height))
+    fig = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
     ax = fig.add_axes([0, 0, 1, 1])
 
     # Leaves the plot without lines and labels
@@ -129,6 +127,8 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     # Creation of img Artist, needs to use the transpose of color grid
     img = ax.imshow(color_points(color, cmap, converging_color))
 
+    print('\n************************ Fractal generator ************************\
+          \nGenerating fractal...')
     start_time = time.time()
 
     global i
@@ -175,7 +175,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
     if not animated:
         update(n_iter)
-        plt.savefig(filename)
+        plt.savefig(filename, dpi=dpi)
         plt.show()
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
@@ -230,21 +230,6 @@ def center_displacement(limits, center, zoom):
         displ = center - (sum(limits)/zoom)/2
 
     return displ
-
-
-
-def check_dpi(width, height, dpi):
-    value = input(f'\n************************ Fractal generator ************************\
-                  \n\nUsing a dpi of {dpi}, the grid has {width*dpi:.0f}x{height*dpi:.0f} = {(width*dpi)*(height*dpi):.0f} points.\
-                  \nDo you want to continue?\n\n(y/n)\n')
-
-    if value == 'y':
-        return
-    elif value == 'n':
-        quit()
-    else:
-        print('Incorrect value!')
-        check_dpi(width, dpi)
 
 
 
