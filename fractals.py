@@ -175,7 +175,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
 
     if not animated:
         update(n_iter)
-        plt.savefig(filename, dpi=dpi)
+        plt.savefig(filename + '.png', dpi=dpi)
         plt.show()
     else:
         anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
