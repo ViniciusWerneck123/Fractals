@@ -81,4 +81,6 @@ Elapsed time: 00:13 s
 ![mandelbrot](https://github.com/user-attachments/assets/f0698a6c-f81c-40f1-a31c-0ffd75582a06)
 
 
+## License
 
+License is MIT.
