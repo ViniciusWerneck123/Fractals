@@ -8,7 +8,6 @@ matplotlib
 numpy
 itertools
 time
-screeninfo
 ```
 
 Here are some examples:
@@ -16,7 +15,7 @@ Here are some examples:
 ## Julia set for c = 1 - golden ratio:
 
 ```
-fractal(fractal_type='julia', c=complex(-0.64, 0), converging_color=[0, 0, 0], dpi=100)
+fractal(fractal_type='julia', c=complex(-0.64, 0), size='800x450')
 ```
 
 ![juliaset_1](https://github.com/user-attachments/assets/65bbea49-0965-4a32-a916-2dcb21b16dd9)
@@ -25,27 +24,22 @@ fractal(fractal_type='julia', c=complex(-0.64, 0), converging_color=[0, 0, 0], d
 ## Julia set for c = 0.285 - 0.01i
 
 ```
-fractal(fractal_type='julia', c=complex(0.285, -0.01), converging_color=[0, 0, 0], dpi=100)
+fractal(fractal_type='julia', c=complex(0.285, -0.01), size='800x450')
 ```
 
 ![juliaset_2](https://github.com/user-attachments/assets/2c68e7ae-0265-4da3-8d7e-006ff189c9ba)
 
 ## Animated version
 ```
-fractal(n_iter=100, fractal_type='julia', c=complex(0.285, -0.01), animated=True)
+fractal(n_iter=100, fractal_type='julia', c=complex(0.285, -0.01), size='800x450', animated=True)
 ```
 ```
 #Output
 ************************ Fractal generator ************************
-
-Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.
-Do you want to continue?
-
-(y/n)
-y
+Generating fractal...
 
 Number of iterations: 100
-Elapsed time: 00:21 min
+Elapsed time: 00:10 min
 *******************************************************************
 ```
 
@@ -55,20 +49,15 @@ Elapsed time: 00:21 min
 ## Plotting the Mandelbrot set:
 
 ```
-fractal(fractal_type='mandelbrot', cmap='binary_r', dpi=100, converging_color=[1, 1, 1])
+fractal(fractal_type='mandelbrot', cmap='binary_r', size='800x450', converging_color=[1, 1, 1])
 ```
 ```
 #Output
 ************************ Fractal generator ************************
+Generating fractal...
 
-Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.
-Do you want to continue?
-
-(y/n)
-y
-
-Number of iterations: 328
-Elapsed time: 00:16 min
+Number of iterations: 130
+Elapsed time: 00:05 min
 *******************************************************************
 ```
 
@@ -82,15 +71,10 @@ fractal(n_iter=50, fractal_type='mandelbrot', cmap='binary', animated=True)
 ```
 #Output
 ************************ Fractal generator ************************
-
-Using a dpi of 100, the grid has 1500x840 = 1260000.0 points.
-Do you want to continue?
-
-(y/n)
-y
+Generating fractal...
 
 Number of iterations: 50
-Elapsed time: 00:10 min
+Elapsed time: 00:13 min
 *******************************************************************
 ```
 
