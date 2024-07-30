@@ -16,7 +16,7 @@ Here are some examples:
 fractal(fractal_type='julia', c=complex(-0.64, 0), size='800x450')
 ```
 
-![juliaset_1](https://github.com/user-attachments/assets/65bbea49-0965-4a32-a916-2dcb21b16dd9)
+![c=-0 64](https://github.com/user-attachments/assets/47892e7f-b9c3-4328-9362-872dd87fa347)
 
 
 ## Julia set for c = 0.285 - 0.01i
@@ -25,7 +25,8 @@ fractal(fractal_type='julia', c=complex(-0.64, 0), size='800x450')
 fractal(fractal_type='julia', c=complex(0.285, -0.01), size='800x450')
 ```
 
-![juliaset_2](https://github.com/user-attachments/assets/2c68e7ae-0265-4da3-8d7e-006ff189c9ba)
+![c=0 285 _0 01i](https://github.com/user-attachments/assets/bc6d865e-8569-47eb-90e8-6d6f2ec04dee)
+
 
 ## Animated version
 ```
@@ -41,7 +42,7 @@ Elapsed time: 00:10 s
 *******************************************************************
 ```
 
-![julia_anim](https://github.com/user-attachments/assets/8b13d854-a01f-40a8-8cec-dbfcec4b8c78)
+![julia1](https://github.com/user-attachments/assets/7e8714fc-eeb7-473a-8f34-f88373b59838)
 
 
 ## Plotting the Mandelbrot set:
@@ -59,7 +60,8 @@ Elapsed time: 00:05 s
 *******************************************************************
 ```
 
-![mandelbrot](https://github.com/user-attachments/assets/c34ced51-6260-4227-8f32-ad2de2587ef9)
+![mandelbrot](https://github.com/user-attachments/assets/227b0a31-3367-4d81-8dd6-53c68de56b5b)
+
 
 ## Animated version:
 
@@ -76,6 +78,7 @@ Elapsed time: 00:13 s
 *******************************************************************
 ```
 
-![mandelbrot_anim](https://github.com/user-attachments/assets/162903be-0627-44f6-8b14-a88ecdb5ea1f)
+![mandelbrot](https://github.com/user-attachments/assets/f0698a6c-f81c-40f1-a31c-0ffd75582a06)
+
 
 
