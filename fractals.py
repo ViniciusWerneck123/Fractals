@@ -20,7 +20,7 @@ def nxtSequenceValue(func, z):
 
 
 def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, sampling: int=4,
-            cmap: str=CMAP, converging_color: list=CONVERGING_COLOR, clean_plot: bool=True, zoom: int=1, center_x: float=None, center_y: float=None,
+            cmap: str=CMAP, converging_color: list=CONVERGING_COLOR, zoom: int=1, center_x: float=None, center_y: float=None,
             xlim: list=None, animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
     '''Creates an image or animation of a specified fractal.                                    
 
@@ -44,8 +44,6 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     converging_color: list([red, green, blue])
         the color of points that do not diverge until the last iteration. The values of each color are a float between 0 and 1.
         Default to [0, 0, 0] -> black
-    clean_plot: bool
-        If `clean_plot` is `True`, the plot will appears without labels and ticks. If `False`, they will appear in the image.
     zoom: int
         The zoom value of the fractal.
     center_x: float, None
@@ -123,9 +121,8 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     ax = fig.add_axes([0, 0, 1, 1])
 
     # Leaves the plot without lines and labels
-    if clean_plot:
-        ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
-        ax.axis('off')
+    ax.tick_params(labelbottom=False, bottom=False, labelleft=False, left=False)
+    ax.axis('off')
 
     # Creation of img Artist, needs to use the transpose of color grid
     img = ax.imshow(color_points(color, cmap, converging_color), interpolation='antialiased')
