@@ -2,6 +2,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import multiprocessing
 import matplotlib.animation as animation
 from itertools import product
 
@@ -153,8 +154,8 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
         color[row_id] = row_color
 
     # Run the loop for each row
-    for ix in range(n_x):
-        calculate_color(grid_points[ix], ix, c)
+    for row_id in range(n_x):
+        calculate_color(grid_points[row_id], row_id, c)
 
     # Creates the color grid with RGBA values
     color_map = color_points(color, cmap, converging_color)
@@ -165,6 +166,8 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
         end_time = time.time()
         evaluate_elapsed_time(start_time, end_time)
 
+    
+    return (img,)
 
 
 
