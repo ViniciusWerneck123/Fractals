@@ -12,7 +12,7 @@ DEFAULT_DPI = 100
 CMAP = 'viridis'
 CONVERGING_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
-MAXIMUM_ITERATIONS = 1000
+MAXIMUM_ITERATIONS = 750
 
 
 def nxtSequenceValue(func, z):
@@ -166,7 +166,7 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
         end_time = time.time()
         evaluate_elapsed_time(start_time, end_time)
 
-    
+
     return (img,)
 
 
