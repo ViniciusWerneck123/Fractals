@@ -129,64 +129,37 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
           \nGenerating fractal...')
     start_time = time.time()
 
-    global i
-    i = 1
+    def calculate_color(row, row_id):
+        '''The loop that calculates the sequence for an row of the grid'''
+        iteration = 0
+        row_color = -np.ones(row.shape)
+        while iteration <= n_iter:
+            row = nxtSequenceValue(lambda x: x**2 + c, row)
+            diverging = np.absolute(row) > 2
 
-    def update(n_iter):
-        '''The loop that calculates the sequence'''
-        global i
-        global z, color
-        while True:
-            # Checks the break condition
-            if type(n_iter) != type(None):
-                if i >= n_iter:
-                    break
-            else:
-                # If there is no point diverging and the iteration is higher than the minimum, leave the loop
-                if i > MINIMUM_ITERATIONS:
-                    if np.all(~diverging):
-                        break
-                else:
-                    pass
-
-            z = nxtSequenceValue(lambda x: x**2 + c, z)
-
-            # Update color based on convergence:
-            # if point diverges, the color of those points will be defined as:
-            # i = number of the iteration where the point diverges
-            # sn = fraction part defined as sn = 1 - log(|z|/log(2)) thus, it depends on the magnitude of the point
-            # color = i + sn
-            diverging = np.absolute(z) > 2
-            new_point = color == -1
-
-            sn = 1 - np.log10(np.absolute(z))/np.log10(2)
-            color[np.logical_and(diverging, new_point)] = i + sn[np.logical_and(diverging, new_point)]
-            z[diverging] = np.nan
-
-            i += 1
+            # Calculates the color of the row if diverging points exists
+            row_color[diverging] = iteration + 1 - np.log10(np.absolute(row[diverging]))/np.log10(2)
+            row[diverging] = np.nan
+            
+            # If all points diverges, then the loop does not need to continue
+            if np.all(np.isnan(row)):
+                break
+            iteration += 1
         
-        color_img = color_points(color, cmap=cmap, converging_color=converging_color)
-        img.set_data(color_img)
+        color[row_id] = row_color
 
-        return (img, )
+    # Run the loop for each row
+    for ix in range(n_x):
+        calculate_color(grid_points[ix], ix)
 
+    # Creates the color grid with RGBA values
+    color_map = color_points(color, cmap, converging_color)
+    img.set_data(color_map)
+    plt.savefig(filename + '.png', dpi=dpi)
 
-    if not animated:
-        img = update(n_iter)[0]
-        plt.savefig(filename + '.png', dpi=dpi)
+    end_time = time.time()
+    evaluate_elapsed_time(start_time, end_time, n_iter)
 
-        end_time = time.time()
-        evaluate_elapsed_time(start_time, end_time, i)
-
-    else:
-        anim = animation.FuncAnimation(fig=fig, func=update, frames=n_iter, repeat=False, interval=frame_interval,
-                                       cache_frame_data=False)
-        anim.save(filename + '.' + file_type, writer='pillow', dpi=dpi)
-        # When frames in FuncAnimation is just a number, is equivalent to range(n_iter), so the last value
-        # is not n_iter but n_iter - 1. This is to ensure i = the number of iterations.
-        i += 1
-        end_time = time.time()
-        evaluate_elapsed_time(start_time, end_time, i)
 
 
 
