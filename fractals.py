@@ -118,10 +118,11 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
     # Creation of img Artist, needs to use the transpose of color grid
     img = ax.imshow(color_points(color, cmap, converging_color), interpolation='antialiased')
     
-    print('\n************************ Fractal generator ************************\
-          \nGenerating fractal...')
     if not animated:
+        print('\n************************ Fractal generator ************************\
+        \nGenerating fractal...')
         start_time = time.time()
+
 
     def calculate_color(row: np.ndarray, row_id: int, c: complex):
         '''The loop that calculates the sequence for an row of the grid'''
