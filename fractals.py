@@ -19,7 +19,7 @@ def nxtSequenceValue(func, z):
 
 
 
-def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, sampling: int=4,
+def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: complex=complex(0, 0), size: str='1600x900', dpi: int=DEFAULT_DPI, sampling: int=4,
             cmap: str=CMAP, converging_color: list=CONVERGING_COLOR, zoom: int=1, center_x: float=None, center_y: float=None,
             animated: bool=False, filename: str='fractal', file_type: str='gif', frame_interval: int=100) -> None:
     '''Creates an image or animation of a specified fractal.                                    
@@ -27,8 +27,7 @@ def fractal(n_iter: int=None, fractal_type: str="mandelbrot", c: complex=complex
     Parameters
     ----------
     n_iter: int, None
-        number of iterations to generate the fractal. If ``n_iter`` is not given, then the fractal will exit when there is no
-        more points diverging in one iteration. For some fractals, the iteration where this happens could be high, up to 500 iterations.                                                             
+        number of iterations to generate the fractal. If ``n_iter`` is not given, then the fractal will be contructed with 500 iterations.                                                             
     fractal_type: {'julia', 'mandelbrot'} 
         the type of the fractal. Default is `'mandelbrot'`.                                   
     c: complex
