@@ -162,7 +162,7 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
     if not animated:
         plt.savefig(filename + '.png', dpi=dpi)
         end_time = time.time()
-        evaluate_elapsed_time(start_time, end_time, n_iter)
+        evaluate_elapsed_time(start_time, end_time)
 
 
 
@@ -209,8 +209,7 @@ def center_displacement(limits, center, zoom):
 
 
 
-def evaluate_elapsed_time(start, end, n_iter):
+def evaluate_elapsed_time(start, end):
     elapsed_time = end - start
-    print(f'\nNumber of iterations: {n_iter:.0f}\
-          \nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} s\
+    print(f'\nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} s\
           \n*******************************************************************')
