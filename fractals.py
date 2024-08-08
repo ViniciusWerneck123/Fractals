@@ -120,7 +120,8 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
     
     print('\n************************ Fractal generator ************************\
           \nGenerating fractal...')
-    start_time = time.time()
+    if not animated:
+        start_time = time.time()
 
     def calculate_color(row: np.ndarray, row_id: int, c: complex):
         '''The loop that calculates the sequence for an row of the grid'''
@@ -157,10 +158,11 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
     # Creates the color grid with RGBA values
     color_map = color_points(color, cmap, converging_color)
     img.set_data(color_map)
-    plt.savefig(filename + '.png', dpi=dpi)
 
-    end_time = time.time()
-    evaluate_elapsed_time(start_time, end_time, n_iter)
+    if not animated:
+        plt.savefig(filename + '.png', dpi=dpi)
+        end_time = time.time()
+        evaluate_elapsed_time(start_time, end_time, n_iter)
 
 
 
