@@ -11,7 +11,7 @@ DEFAULT_DPI = 100
 CMAP = 'viridis'
 CONVERGING_COLOR = [0, 0, 0] # [r, g, b]
 MINIMUM_ITERATIONS = 25
-MAXIMUM_ITERATIONS = 500
+MAXIMUM_ITERATIONS = 1000
 
 
 def nxtSequenceValue(func, z):
@@ -102,16 +102,10 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
     grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((n_x, n_y))
     
     # z and color needs to be global in order to the inner function 'update()' below can access them
-    global z, color
+    global color
 
     # Color of the converging points
     color = np.ones(grid_points.shape)*-1
-
-    if fractal_type == 'mandelbrot':
-        z = c
-        c = grid_points
-    else:
-        z = grid_points
 
     # Creating the figure and adding an axes that ocuppies the whole figure area
     fig = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
@@ -128,20 +122,29 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
           \nGenerating fractal...')
     start_time = time.time()
 
-    def calculate_color(row, row_id):
+    def calculate_color(row: np.ndarray, row_id: int, c: complex):
         '''The loop that calculates the sequence for an row of the grid'''
         iteration = 0
         row_color = -np.ones(row.shape)
+
+        # Checking the type of fractal
+        if fractal_type == 'mandelbrot':
+            z = c
+            c = row
+        else:
+            z = row
+
         while iteration <= n_iter:
-            row = nxtSequenceValue(lambda x: x**2 + c, row)
-            diverging = np.absolute(row) > 2
+
+            z = nxtSequenceValue(lambda x: x**2 + c, z)
+            diverging = np.absolute(z) > 2
 
             # Calculates the color of the row if diverging points exists
-            row_color[diverging] = iteration + 1 - np.log10(np.absolute(row[diverging]))/np.log10(2)
-            row[diverging] = np.nan
+            row_color[diverging] = iteration + 1 - np.log10(np.absolute(z[diverging]))/np.log10(2)
+            z[diverging] = np.nan
             
             # If all points diverges, then the loop does not need to continue
-            if np.all(np.isnan(row)):
+            if np.all(np.isnan(z)):
                 break
             iteration += 1
         
@@ -149,7 +152,7 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
 
     # Run the loop for each row
     for ix in range(n_x):
-        calculate_color(grid_points[ix], ix)
+        calculate_color(grid_points[ix], ix, c)
 
     # Creates the color grid with RGBA values
     color_map = color_points(color, cmap, converging_color)
