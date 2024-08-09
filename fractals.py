@@ -2,7 +2,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import multiprocessing
+import sys
 import matplotlib.animation as animation
 from itertools import product
 
@@ -124,8 +124,25 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
         \nGenerating fractal...')
         start_time = time.time()
 
+    # Run the loop for each row
+    for row_id in range(n_x):
+        calc_row_color(grid_points[row_id], row_id, c, n_iter, fractal_type)
 
-    def calculate_color(row: np.ndarray, row_id: int, c: complex):
+    # Creates the color grid with RGBA values
+    color_map = color_points(color, cmap, converging_color)
+    img.set_data(color_map)
+
+    if not animated:
+        plt.savefig(filename + '.png', dpi=dpi)
+        end_time = time.time()
+        evaluate_elapsed_time(start_time, end_time)
+
+
+    return (img,)
+
+
+
+def calc_row_color(row: np.ndarray, row_id: int, c: complex, n_iter: int, fractal_type: str):
         '''The loop that calculates the sequence for an row of the grid'''
         iteration = 0
         row_color = -np.ones(row.shape)
@@ -152,22 +169,6 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
             iteration += 1
         
         color[row_id] = row_color
-
-    # Run the loop for each row
-    for row_id in range(n_x):
-        calculate_color(grid_points[row_id], row_id, c)
-
-    # Creates the color grid with RGBA values
-    color_map = color_points(color, cmap, converging_color)
-    img.set_data(color_map)
-
-    if not animated:
-        plt.savefig(filename + '.png', dpi=dpi)
-        end_time = time.time()
-        evaluate_elapsed_time(start_time, end_time)
-
-
-    return (img,)
 
 
 
@@ -217,3 +218,12 @@ def evaluate_elapsed_time(start, end):
     elapsed_time = end - start
     print(f'\nElapsed time: {elapsed_time/60:02.0f}:{round(elapsed_time%60, 0):02.0f} s\
           \n*******************************************************************')
+
+
+
+
+
+
+if __name__ == '__main__':
+    list_args = sys.argv[1:]
+    
