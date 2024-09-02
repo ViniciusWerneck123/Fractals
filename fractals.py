@@ -3,6 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import sys
+import multiprocessing as mp
 import matplotlib.animation as animation
 from itertools import product
 
@@ -101,9 +102,6 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
 
     # Complex grid
     grid_points = np.array([complex(i[0], i[1]) for i in values]).reshape((n_x, n_y))
-    
-    # z and color needs to be global in order to the inner function 'update()' below can access them
-    global color
 
     # Color of the converging points
     color = np.ones(grid_points.shape)*-1
@@ -124,9 +122,20 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
         \nGenerating fractal...')
         start_time = time.time()
 
+    procs = []
+    queue = mp.Queue()
+    queue.put(color)
+
     # Run the loop for each row
     for row_id in range(n_x):
-        calc_row_color(grid_points[row_id], row_id, c, n_iter, fractal_type)
+        proc = mp.Process(target=calc_row_color, args=(grid_points[row_id], row_id, c, n_iter, fractal_type, queue))
+        procs.append(proc)
+        proc.start()
+
+    for proc in procs:
+        proc.join()
+
+    color = queue.get()
 
     # Creates the color grid with RGBA values
     color_map = color_points(color, cmap, converging_color)
@@ -142,8 +151,9 @@ def fractal(n_iter: int=MAXIMUM_ITERATIONS, fractal_type: str="mandelbrot", c: c
 
 
 
-def calc_row_color(row: np.ndarray, row_id: int, c: complex, n_iter: int, fractal_type: str):
+def calc_row_color(row: np.ndarray, row_id: int, c: complex, n_iter: int, fractal_type: str, queue: mp.Queue):
         '''The loop that calculates the sequence for an row of the grid'''
+        color = queue.get()
         iteration = 0
         row_color = -np.ones(row.shape)
 
@@ -169,6 +179,7 @@ def calc_row_color(row: np.ndarray, row_id: int, c: complex, n_iter: int, fracta
             iteration += 1
         
         color[row_id] = row_color
+        queue.put(color)
 
 
 
